@@ -21,4 +21,16 @@ class UserRegistrationTest(APITestCase):
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+	def test_unique_username(self):
+		"""
+		Test if an existing username can be used.
+		"""
+		data = {
+			'username': 'testUser',
+			'email': 'testEmail.One@mail.com',
+			'password': 'testPassword'
+		}
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 	
