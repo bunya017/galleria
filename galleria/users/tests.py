@@ -69,4 +69,14 @@ class UserRegistrationTest(APITestCase):
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-	
+	def test_blank_password(self):
+		"""
+		Test if password field can be submitted blank.
+		"""
+		data = {
+			'username': 'testUser1',
+			'email': 'testEmail.One@mail.com',
+			'password': ''
+		}
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
