@@ -36,10 +36,25 @@ class Catalog(models.Model):
 		return self.name
 
 
+class Category(models.Model):
+	name = models.CharField(max_length=150)
+	catalog = models.ForeignKey(Catalog, on_delete=models.CASCADE)
+	created_on = models.DateTimeField(auto_now_add=True)
+	description = models.CharField(max_length=255, blank=True)
+
+	class Meta:
+		verbose_name_plural = 'Categories'
+
+	def __str__(self):
+		return self.name
+
+
 class ProductEntry(models.Model):
 	name = models.CharField(max_length=75)
+	category = models.ForeignKey(Category, on_delete=models.CASCADE)
 	description = models.CharField(max_length=355)
 	price = models.DecimalField(max_digits=12, decimal_places=2)
+	reference_number = models.CharField(max_length=15)
 	created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 	created_on = models.DateTimeField(auto_now_add=True)
 	last_modified = models.DateTimeField(auto_now=True)
