@@ -38,7 +38,7 @@ class Catalog(models.Model):
 
 class Category(models.Model):
 	name = models.CharField(max_length=150)
-	catalog = models.ForeignKey(Catalog, on_delete=models.CASCADE)
+	catalog = models.ForeignKey(Catalog, related_name='categories', on_delete=models.CASCADE)
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255, blank=True)
 
@@ -51,7 +51,7 @@ class Category(models.Model):
 
 class ProductEntry(models.Model):
 	name = models.CharField(max_length=150)
-	category = models.ForeignKey(Category, on_delete=models.CASCADE)
+	category = models.ForeignKey(Category, related_name='product_entries', on_delete=models.CASCADE)
 	description = models.CharField(max_length=355)
 	price = models.DecimalField(max_digits=12, decimal_places=2)
 	reference_number = models.CharField(max_length=15)
@@ -68,7 +68,7 @@ class ProductEntry(models.Model):
 
 
 class ProductImage(models.Model):
-	product = models.ForeignKey(ProductEntry, on_delete=models.CASCADE)
+	product = models.ForeignKey(ProductEntry, related_name='photos', on_delete=models.CASCADE)
 	title = models.CharField(max_length=150)
 	photo = models.ImageField(upload_to='uploads/', blank=True)
 
