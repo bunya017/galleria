@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 
 class UserRegistrationTest(APITestCase):
 	def setUp(self):
-		User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
 		self.url = reverse('user-registration')
 
 	def test_user_registration(self):
@@ -20,6 +20,9 @@ class UserRegistrationTest(APITestCase):
 		}
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		self.assertEqual(User.objects.all().count(), 2)
+		# Make sure auth token is returned as response.
+		self.assertNotEqual(response.data['token'], '')
 
 	def test_unique_username(self):
 		"""
@@ -80,3 +83,19 @@ class UserRegistrationTest(APITestCase):
 		}
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class ObtainAuthTokenTest(APITestCase):
+	def setUp(self):
+		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.url = reverse('token-auth')
+		self.data = {
+			'username': 'testUser',
+			'password': 'testPassword'
+		}
+
+	def test_fetch_auth_token(self):
+		response = self.client.post(self.url, self.data)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(len(response.data), 1)
+		self.assertNotEqual(response.data['token'], '')
