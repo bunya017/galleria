@@ -11,7 +11,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductEntrySerializer(serializers.ModelSerializer):
-	photos = ProductImageSerializer(many=True)
+	photos = ProductImageSerializer(many=True, read_only=True)
 
 	class Meta:
 		model = ProductEntry
@@ -22,7 +22,7 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-	product_entries = ProductEntrySerializer(many=True)
+	product_entries = ProductEntrySerializer(many=True, read_only=True)
 
 	class Meta:
 		model = Category
@@ -30,7 +30,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class CatalogSerializer(serializers.ModelSerializer):
-	categories = CategorySerializer(many=True)
+	categories = CategorySerializer(many=True, read_only=True)
 
 	class Meta:
 		model = Catalog
