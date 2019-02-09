@@ -11,7 +11,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductEntrySerializer(serializers.ModelSerializer):
-	photos = ProductImageSerializer(many=True)
+	photos = ProductImageSerializer(many=True, read_only=True)
 
 	class Meta:
 		model = ProductEntry
@@ -22,19 +22,20 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-	product_enties = ProductEntrySerializer(many=True)
+	product_entries = ProductEntrySerializer(many=True, read_only=True)
 
 	class Meta:
 		model = Category
-		fields = ('id', 'name','catalog','created_on','description', 'product_enties')
+		fields = ('id', 'name','catalog','created_on','description', 'product_entries')
 
 
-class CatalogSerializer(models.ModelSerializer):
-	categories = CategorySerializer(many=True)
+class CatalogSerializer(serializers.ModelSerializer):
+	owner = serializers.ReadOnlyField(source='owner.username')
+	categories = CategorySerializer(many=True, read_only=True)
 
 	class Meta:
 		model = Catalog
 		fields = (
-			'name', 'created_on', 'description', 'contact_address', 'contact_email', 
-			'contact_phone', 'categories',
+			'id', 'owner', 'name', 'created_on', 'description', 'contact_address', 
+			'contact_email', 'contact_phone', 'categories',
 		)
