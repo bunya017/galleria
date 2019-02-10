@@ -67,3 +67,18 @@ class CatalogListTest(APITestCase):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(response.data[0]['owner'], 'testUser1')
+
+	def test_blank_name(self):
+		"""
+		Test if name field submitted blank is allowed.
+		"""
+		data = {
+			'name': '',
+			'description': 'Catalog description',
+			'contact_address': '125 Test Avenue',
+			'contact_email': 'testEmail@mail.com',
+			'contact_phone': '08011223344',
+		}
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
