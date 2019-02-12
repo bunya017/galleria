@@ -7,7 +7,6 @@ from .serializers import CatalogSerializer
 
 class CatalogList(generics.ListCreateAPIView):
 	serializer_class = CatalogSerializer
-	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 	def get_queryset(self):
 		try:
@@ -18,3 +17,13 @@ class CatalogList(generics.ListCreateAPIView):
 
 	def perform_create(self, serializer):
 		serializer.save(owner=self.request.user)
+
+
+class CatalogDetail(generics.RetrieveAPIView):
+	"""
+	Catalog Detail endpoint to be viewed by visitors.
+	"""
+	serializer_class = CatalogSerializer
+	permission_classes = (permissions.AllowAny,)
+	queryset = Catalog.objects.all()
+	lookup_field= 'name'
