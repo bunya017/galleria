@@ -51,6 +51,7 @@ class Category(models.Model):
 
 	class Meta:
 		verbose_name_plural = 'Categories'
+		unique_together = ('name', 'catalog')
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.name)
@@ -72,6 +73,7 @@ class ProductEntry(models.Model):
 	last_modified = models.DateTimeField(auto_now=True)
 
 	class Meta:
+		unique_together = ('name', 'category')
 		verbose_name = 'Product'
 		verbose_name_plural = 'Products'
 
