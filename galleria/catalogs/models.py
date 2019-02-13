@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.text import slugify
 
 
 
@@ -22,6 +23,7 @@ subscription_plan = models.CharField(
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=150)
+	slug = models.SlugField(unique=True)
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255)
 	contact_address = models.CharField(max_length=255)
@@ -32,6 +34,10 @@ class Catalog(models.Model):
 		verbose_name = 'Catalog'
 		verbose_name_plural = 'Catalogs'
 
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.name)
+		super(Catalog, self).save(*args, **kwargs)
+
 	def __str__(self):
 		return self.name
 
@@ -39,11 +45,16 @@ class Catalog(models.Model):
 class Category(models.Model):
 	name = models.CharField(max_length=150)
 	catalog = models.ForeignKey(Catalog, related_name='categories', on_delete=models.CASCADE)
+	slug = models.SlugField(unique=True)
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255, blank=True)
 
 	class Meta:
 		verbose_name_plural = 'Categories'
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.name)
+		super(Category, self).save(*args, **kwargs)
 
 	def __str__(self):
 		return self.name
@@ -52,6 +63,7 @@ class Category(models.Model):
 class ProductEntry(models.Model):
 	name = models.CharField(max_length=150)
 	category = models.ForeignKey(Category, related_name='product_entries', on_delete=models.CASCADE)
+	slug = models.SlugField(unique=True)
 	description = models.CharField(max_length=355)
 	price = models.DecimalField(max_digits=12, decimal_places=2)
 	reference_number = models.CharField(max_length=15)
@@ -62,6 +74,10 @@ class ProductEntry(models.Model):
 	class Meta:
 		verbose_name = 'Product'
 		verbose_name_plural = 'Products'
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.name)
+		super(ProductEntry, self).save(*args, **kwargs)
 
 	def __str__(self):
 		return self.name
