@@ -22,7 +22,7 @@ subscription_plan = models.CharField(
 
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
-	name = models.CharField(max_length=150)
+	name = models.CharField(max_length=150, unique=True)
 	slug = models.SlugField(unique=True)
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255)
@@ -51,6 +51,7 @@ class Category(models.Model):
 
 	class Meta:
 		verbose_name_plural = 'Categories'
+		unique_together = ('name', 'catalog')
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.name)
@@ -72,6 +73,7 @@ class ProductEntry(models.Model):
 	last_modified = models.DateTimeField(auto_now=True)
 
 	class Meta:
+		unique_together = ('name', 'category')
 		verbose_name = 'Product'
 		verbose_name_plural = 'Products'
 
