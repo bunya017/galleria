@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from .models import Catalog
+from .models import Catalog, Category
 
 
 
@@ -182,3 +182,34 @@ class CatalogDetailTest(APITestCase):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertIn(self.data, response.data['url'])
+
+
+class CategoryListTest(APITestCase):
+	def setUp(self):
+		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.catalog = Catalog.objects.create(
+							owner=self.user,
+							name='Test Catalogs Inc.',
+							description='Catalog description',
+							contact_address='125 Test Avenue',
+							contact_email='testEmail@mail.com',
+							contact_phone='08011223344',
+		)
+		slug = self.catalog.slug
+		self.url = reverse('category-list', args=[slug])
+		self.data = {
+			'name': 'Kids Clothing',
+			'catalog': self.catalog.id,
+			'description': 'Clothes for kids.',
+		}
+
+	def test_autenticated_user_can_create_category(self):
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.post(self.url, self.data)
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		self.assertEqual(Category.objects.all().count(), 1)
+
+	def test_unautenticated_user_can_create_category(self):
+		response = self.client.post(self.url, self.data)
+		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+		self.assertEqual(Category.objects.all().count(), 0)
