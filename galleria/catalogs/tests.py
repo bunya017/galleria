@@ -196,7 +196,7 @@ class CategoryListTest(APITestCase):
 							contact_phone='08011223344',
 		)
 		slug = self.catalog.slug
-		self.url = reverse('category-list', args=[slug])
+		self.url = reverse('category-list', kwargs={'catalog__slug': slug})
 		self.data = {
 			'name': 'Kids Clothing',
 			'catalog': self.catalog.id,
