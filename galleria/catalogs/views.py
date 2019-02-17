@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import NotAuthenticated
+from .mixins import MultipleFieldLookupMixin
 from .models import Catalog, Category
 from .serializers import CatalogSerializer, CategorySerializer
 
@@ -36,3 +37,9 @@ class CategoryList(generics.ListCreateAPIView):
 		slug = self.kwargs['catalog__slug']
 		queryset = Category.objects.filter(catalog__slug=slug)
 		return queryset
+
+
+class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = CategorySerializer
+	queryset = Category.objects.all()
+	lookup_fields = ('catalog__slug', 'slug')
