@@ -1,8 +1,8 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import NotAuthenticated
 from .mixins import MultipleFieldLookupMixin
-from .models import Catalog, Category
-from .serializers import CatalogSerializer, CategorySerializer
+from .models import Catalog, Category, ProductEntry
+from .serializers import CatalogSerializer, CategorySerializer, ProductEntrySerializer
 
 
 
@@ -43,3 +43,16 @@ class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPI
 	serializer_class = CategorySerializer
 	queryset = Category.objects.all()
 	lookup_fields = ('catalog__slug', 'slug')
+
+
+class ProductEntryList(generics.ListCreateAPIView):
+	serializer_class = ProductEntrySerializer
+
+	def get_queryset(self):
+		slug = self.kwargs['category__catalog__slug']
+		queryset = ProductEntry.objects.filter(category__catalog__slug=slug)
+		return queryset
+
+	def perform_create(self, serializer):
+		data = serializer.validated_data
+		serializer.save(created_by=self.request.user)
