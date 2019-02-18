@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from .models import Catalog, Category
+from .models import Catalog, Category, ProductEntry
 
 
 
@@ -188,12 +188,12 @@ class CategoryListTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
 		self.catalog = Catalog.objects.create(
-							owner=self.user,
-							name='Test Catalogs Inc.',
-							description='Catalog description',
-							contact_address='125 Test Avenue',
-							contact_email='testEmail@mail.com',
-							contact_phone='08011223344',
+			owner=self.user,
+			name='Test Catalogs Inc.',
+			description='Catalog description',
+			contact_address='125 Test Avenue',
+			contact_email='testEmail@mail.com',
+			contact_phone='08011223344',
 		)
 		slug = self.catalog.slug
 		self.url = reverse('category-list', kwargs={'catalog__slug': slug})
@@ -219,12 +219,12 @@ class CategoryDetailTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
 		self.catalog = Catalog.objects.create(
-							owner=self.user,
-							name='Test Catalogs Inc.',
-							description='Catalog description',
-							contact_address='125 Test Avenue',
-							contact_email='testEmail@mail.com',
-							contact_phone='08011223344',
+			owner=self.user,
+			name='Test Catalogs Inc.',
+			description='Catalog description',
+			contact_address='125 Test Avenue',
+			contact_email='testEmail@mail.com',
+			contact_phone='08011223344',
 		)
 		self.category = Category.objects.create(
 			name='Kids Clothing',
@@ -248,3 +248,52 @@ class CategoryDetailTest(APITestCase):
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(response.data['name'], self.category.name)
 
+
+class ProductEntryListTest(APITestCase):
+	def setUp(self):
+		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.catalog = Catalog.objects.create(
+			owner=self.user,
+			name='Test Catalogs Inc.',
+			description='Catalog description',
+			contact_address='125 Test Avenue',
+			contact_email='testEmail@mail.com',
+			contact_phone='08011223344',
+		)
+		self.category = Category.objects.create(
+			name='Kids Clothing',
+			catalog=self.catalog,
+			description='Clothes for kids.',
+		)
+		self.url = reverse('productentry-list',
+			kwargs={
+				'category__catalog__slug': self.catalog.slug,
+			}
+		)
+		self.data = {
+			'name': 'Tee Shirt',
+			'category': self.category.id,
+			'description': 'Blue tee-shirt for kids.',
+			'price': 3000,
+			'reference_number': 'KTS001',
+		}
+
+	def test_autenticated_user_can_create_productEntry(self):
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.post(self.url, self.data)
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		self.assertEqual(ProductEntry.objects.all().count(), 1)
+
+	def test_unautenticated_user_can_create_productEntry(self):
+		response = self.client.post(self.url, self.data)
+		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+		self.assertEqual(ProductEntry.objects.all().count(), 0)
+
+	def test_autenticated_user_can_get_productEntry_list(self):
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+	def test_unautenticated_user_can_get_productEntry_list(self):
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
