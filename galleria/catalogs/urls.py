@@ -16,5 +16,8 @@ urlpatterns = [
 	),
 	path('catalogs/<str:category__catalog__slug>/p/products/',
 		views.ProductEntryList.as_view(), name='productentry-list',
-	)
+	),
+	path('catalogs/<str:category__catalog__slug>/p/<str:slug>/<str:reference_id>/',
+		views.ProductEntryDetail.as_view(), name='productentry-detail',
+	),
 ]
