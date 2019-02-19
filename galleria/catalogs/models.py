@@ -20,6 +20,13 @@ subscription_plan = models.CharField(
 		choices=
 	)
 '''
+def product_photo_upload_path(instance, filename):
+	return '{0}/product-images/{1}-{2}/{3}'.format(
+		instance.product.category.catalog.slug,
+		instance.product.slug,
+		instance.product.reference_id,
+		filename,
+	)
 
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -91,7 +98,7 @@ class ProductEntry(models.Model):
 class ProductImage(models.Model):
 	product = models.ForeignKey(ProductEntry, related_name='photos', on_delete=models.CASCADE)
 	title = models.CharField(max_length=150)
-	photo = models.ImageField(upload_to='uploads/', blank=True)
+	photo = models.ImageField(upload_to=product_photo_upload_path, blank=True)
 
 	class Meta:
 		verbose_name = 'Product Image'
