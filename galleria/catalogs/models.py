@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
+from .utils import generate_hash_id
 
 
 
@@ -67,7 +68,8 @@ class ProductEntry(models.Model):
 	slug = models.SlugField()
 	description = models.CharField(max_length=355)
 	price = models.DecimalField(max_digits=12, decimal_places=2)
-	reference_number = models.CharField(max_length=15)
+	sku = models.CharField(max_length=32, blank=True)
+	reference_id = models.CharField(max_length=16, blank=True)
 	created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 	created_on = models.DateTimeField(auto_now_add=True)
 	last_modified = models.DateTimeField(auto_now=True)
@@ -78,6 +80,8 @@ class ProductEntry(models.Model):
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.name)
+		products_count = ProductEntry.objects.all().count()
+		self.reference_id = generate_hash_id(id=products_count+1, salt=self.name, len=16)
 		super(ProductEntry, self).save(*args, **kwargs)
 
 	def __str__(self):
