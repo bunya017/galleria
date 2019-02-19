@@ -1,8 +1,11 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import NotAuthenticated
 from .mixins import MultipleFieldLookupMixin
-from .models import Catalog, Category, ProductEntry
-from .serializers import CatalogSerializer, CategorySerializer, ProductEntrySerializer
+from .models import Catalog, Category, ProductEntry, ProductImage
+from .serializers import (
+	CatalogSerializer, CategorySerializer,
+	ProductEntrySerializer, ProductImageSerializer,
+)
 
 
 
@@ -62,3 +65,9 @@ class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestro
 	serializer_class = ProductEntrySerializer
 	queryset = ProductEntry.objects.all()
 	lookup_fields = ('category__catalog__slug', 'slug')
+
+
+class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
+	serializer_class = ProductImageSerializer
+	queryset = ProductImage.objects.all()
+	lookup_fields = ('product__category__catalog__slug', 'product__slug', 'product__reference_id')
