@@ -1,8 +1,12 @@
+import os
+import shutil
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APITestCase
-from .models import Catalog, Category, ProductEntry
+from .models import Catalog, Category, ProductEntry, ProductImage
+from .utils import generate_photo
 
 
 
@@ -314,7 +318,7 @@ class ProductEntryDetailTest(APITestCase):
 			catalog=self.catalog,
 			description='Clothes for kids.',
 		)
-		self.produuct = ProductEntry.objects.create(
+		self.product = ProductEntry.objects.create(
 			name='Tee Shirt',
 			category=self.category,
 			description='Blue tee-shirt for kids.',
@@ -324,11 +328,67 @@ class ProductEntryDetailTest(APITestCase):
 		self.url = reverse('productentry-detail',
 			kwargs={
 				'category__catalog__slug': self.catalog.slug,
-				'slug': self.produuct.slug,
-				'reference_id': self.produuct.reference_id,
+				'slug': self.product.slug,
+				'reference_id': self.product.reference_id,
 			}
 		)
 
 	def test_get_product_entry_detail(self):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class ProductImageListTest(APITestCase):
+	def setUp(self):
+		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.catalog = Catalog.objects.create(
+			owner=self.user,
+			name='Test Catalogs Inc.',
+			description='Catalog description',
+			contact_address='125 Test Avenue',
+			contact_email='testEmail@mail.com',
+			contact_phone='08011223344',
+		)
+		self.category = Category.objects.create(
+			name='Kids Clothing',
+			catalog=self.catalog,
+			description='Clothes for kids.',
+		)
+		self.product = ProductEntry.objects.create(
+			name='Tee Shirt',
+			category=self.category,
+			description='Blue tee-shirt for kids.',
+			price=3000,
+			created_by=self.user,
+		)
+		self.url = reverse('productimage-list',
+			kwargs={
+				'product__category__catalog__slug': self.product.category.catalog.slug,
+				'product__slug': self.product.slug,
+				'reference_id': self.product.reference_id,
+			}
+		)
+
+	def _cleanup(self, path):
+		if os.path.isdir(path):
+			shutil.rmtree(path)
+
+	def tearDown(self):
+		self._cleanup(os.path.join(settings.MEDIA_ROOT, self.catalog.slug))
+
+	def test_add_product_image(self):
+		self.client.login(username='testUser', password='testPassword')
+		photo_file = generate_photo('test_image')
+		data = {
+			'product': self.product.id,
+			'title': 'tee-shirt-blue-001',
+			'photo': photo_file,
+		}
+		response = self.client.post(self.url, data, format='multipart')
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		self.assertEqual(ProductImage.objects.all().count(), 1)
+
+	def test_get_product_image_list(self):
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(ProductImage.objects.all().count(), 0)
