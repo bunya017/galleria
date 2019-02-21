@@ -1,7 +1,10 @@
 import io
+import os
+import shutil
 from PIL import Image
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import Catalog, Category, ProductEntry, ProductImage
@@ -366,6 +369,13 @@ class ProductImageListTest(APITestCase):
 				'reference_id': self.product.reference_id,
 			}
 		)
+
+	def _cleanup(self, path):
+		if os.path.isdir(path):
+			shutil.rmtree(path)
+
+	def tearDown(self):
+		self._cleanup(os.path.join(settings.MEDIA_ROOT, self.catalog.slug))
 
 	def generate_photo(self):
 		file = io.BytesIO()
