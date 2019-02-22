@@ -1,6 +1,7 @@
 Django==2.1.7
 django-cors-headers==2.4.0
 djangorestframework==3.9.1
+hashids==1.2.0
 Pillow==5.4.1
 python-decouple==3.1
 pytz==2018.9
