@@ -62,6 +62,10 @@ class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPI
 
 class ProductEntryList(generics.ListCreateAPIView):
 	serializer_class = ProductEntrySerializer
+	permission_classes = (
+		my_permissions.IsProductEntryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 
 	def get_queryset(self):
 		slug = self.kwargs['category__catalog__slug']
