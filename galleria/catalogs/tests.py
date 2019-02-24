@@ -294,6 +294,7 @@ class CategoryDetailTest(APITestCase):
 class ProductEntryListTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword1')
 		self.catalog = Catalog.objects.create(
 			owner=self.user,
 			name='Test Catalogs Inc.',
@@ -338,6 +339,12 @@ class ProductEntryListTest(APITestCase):
 	def test_unautenticated_user_can_get_productEntry_list(self):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+	def test_non_owner_can_create_productEntry(self):
+		self.client.login(username='testUser1', password='testPassword1')
+		response = self.client.post(self.url, self.data)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		self.assertEqual(ProductEntry.objects.all().count(), 0)
 
 
 class ProductEntryDetailTest(APITestCase):
