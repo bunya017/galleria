@@ -39,6 +39,10 @@ class CatalogDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CategoryList(generics.ListCreateAPIView):
 	serializer_class = CategorySerializer
+	permission_classes = (
+		my_permissions.IsCategoryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 
 	def get_queryset(self):
 		slug = self.kwargs['catalog__slug']
@@ -48,6 +52,10 @@ class CategoryList(generics.ListCreateAPIView):
 
 class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = CategorySerializer
+	permission_classes = (
+		my_permissions.IsCategoryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 	queryset = Category.objects.all()
 	lookup_fields = ('catalog__slug', 'slug')
 
