@@ -6,6 +6,7 @@ from .serializers import (
 	CatalogSerializer, CategorySerializer,
 	ProductEntrySerializer, ProductImageSerializer,
 )
+from .import permissions as my_permissions
 
 
 
@@ -23,11 +24,15 @@ class CatalogList(generics.ListCreateAPIView):
 		serializer.save(owner=self.request.user)
 
 
-class CatalogDetail(generics.RetrieveAPIView):
+class CatalogDetail(generics.RetrieveUpdateDestroyAPIView):
 	"""
 	Catalog Detail endpoint to be viewed by visitors.
 	"""
 	serializer_class = CatalogSerializer
+	permission_classes = (
+		my_permissions.IsCatalogOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 	queryset = Catalog.objects.all()
 	lookup_field = 'slug'
 

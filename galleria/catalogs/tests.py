@@ -159,6 +159,7 @@ class CatalogListTest(APITestCase):
 class CatalogDetailTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword1')		
 		self.catalog = Catalog.objects.create(
 			owner=self.user,
 			name='Test Catalogs Inc',
@@ -186,6 +187,20 @@ class CatalogDetailTest(APITestCase):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertIn(self.data, response.data['url'])
+
+	def test_non_owner_can_update_catalog(self):
+		payload = {
+			'name': 'Test1 Catalogs Inc',
+			'description': 'Catalog description as edited by user1',
+			'contact_address': '126 Test Avenue',
+			'contact_email': 'testEmail1@mail.com',
+			'contact_phone': '08011223311',
+		}
+		self.client.login(username='testUser1', password='testPassword1')
+		response = self.client.put(self.url, payload)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		self.assertEqual(Catalog.objects.filter(name=self.catalog.name).count(), 1)
+		self.assertEqual(Catalog.objects.filter(name=payload['name']).count(), 0)
 
 
 class CategoryListTest(APITestCase):
