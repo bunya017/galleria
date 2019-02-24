@@ -294,6 +294,7 @@ class CategoryDetailTest(APITestCase):
 class ProductEntryListTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword1')
 		self.catalog = Catalog.objects.create(
 			owner=self.user,
 			name='Test Catalogs Inc.',
@@ -339,10 +340,17 @@ class ProductEntryListTest(APITestCase):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+	def test_non_owner_can_create_productEntry(self):
+		self.client.login(username='testUser1', password='testPassword1')
+		response = self.client.post(self.url, self.data)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		self.assertEqual(ProductEntry.objects.all().count(), 0)
+
 
 class ProductEntryDetailTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword1')
 		self.catalog = Catalog.objects.create(
 			owner=self.user,
 			name='Test Catalogs Inc.',
@@ -374,6 +382,22 @@ class ProductEntryDetailTest(APITestCase):
 	def test_get_product_entry_detail(self):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+	def test_non_product_owner_can_update(self):
+		payload = {
+			'name': 'Tee Shirt by user1',
+			'category': self.category,
+			'description': 'Blue tee-shirt for kids.',
+			'price': 3000,
+			'created_by': self.user1,
+		}
+		self.client.login(username='testUser1', password='testPassword1')
+		response = self.client.put(self.url, payload)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		self.assertEqual(ProductEntry.objects.filter(
+			name=self.product.name, category__catalog=self.catalog).count(), 1)
+		self.assertEqual(ProductEntry.objects.filter(
+			name=payload['name'], category__catalog=self.catalog).count(), 0)
 
 
 class ProductImageListTest(APITestCase):
