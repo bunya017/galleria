@@ -89,6 +89,10 @@ class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestro
 
 class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
 	serializer_class = ProductImageSerializer
+	permission_classes = (
+		my_permissions.IsProductImageOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 	queryset = ProductImage.objects.all()
 	lookup_fields = (
 		'product__category__catalog__slug',
