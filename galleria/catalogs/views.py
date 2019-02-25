@@ -39,6 +39,10 @@ class CatalogDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CategoryList(generics.ListCreateAPIView):
 	serializer_class = CategorySerializer
+	permission_classes = (
+		my_permissions.IsCategoryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 
 	def get_queryset(self):
 		slug = self.kwargs['catalog__slug']
@@ -48,12 +52,20 @@ class CategoryList(generics.ListCreateAPIView):
 
 class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = CategorySerializer
+	permission_classes = (
+		my_permissions.IsCategoryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 	queryset = Category.objects.all()
 	lookup_fields = ('catalog__slug', 'slug')
 
 
 class ProductEntryList(generics.ListCreateAPIView):
 	serializer_class = ProductEntrySerializer
+	permission_classes = (
+		my_permissions.IsProductEntryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 
 	def get_queryset(self):
 		slug = self.kwargs['category__catalog__slug']
@@ -67,12 +79,20 @@ class ProductEntryList(generics.ListCreateAPIView):
 
 class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = ProductEntrySerializer
+	permission_classes = (
+		my_permissions.IsProductEntryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 	queryset = ProductEntry.objects.all()
 	lookup_fields = ('category__catalog__slug', 'slug')
 
 
 class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
 	serializer_class = ProductImageSerializer
+	permission_classes = (
+		my_permissions.IsProductImageOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 	queryset = ProductImage.objects.all()
 	lookup_fields = (
 		'product__category__catalog__slug',
