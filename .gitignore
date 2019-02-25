@@ -1,2 +1,8 @@
 /venv/
 *.pyc
+*.sqlite3
+*.sqlite3-journal
+.env
+galleria/media
+galleria/static
+.vscode/
