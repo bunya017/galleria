@@ -11,15 +11,6 @@ class UserRegistration(generics.CreateAPIView):
 	serializer_class = UserSerializer
 	permission_classes = (permissions.AllowAny,)
 
-	def perform_create(self, serializer):
-		data = serializer.validated_data
-		email = data['email']
-		if email == '':
-			raise serializers.ValidationError({'email': 'This field may not be blank.'})
-		elif User.objects.filter(email=email).exists():
-			raise serializers.ValidationError({'email': 'A user with that email already exists.'})
-		serializer.save()
-
 	def create(self, request, *args, **kwargs):
 		serializer = self.get_serializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
