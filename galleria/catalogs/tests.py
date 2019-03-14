@@ -387,3 +387,8 @@ class ProductImageListTest(APITestCase):
 		response = self.client.post(self.url, data, format='multipart')
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 		self.assertEqual(ProductImage.objects.all().count(), 1)
+
+	def test_get_product_image_list(self):
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(ProductImage.objects.all().count(), 0)
