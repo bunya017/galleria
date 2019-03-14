@@ -57,4 +57,16 @@ class UserRegistrationTest(APITestCase):
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+	def test_blank_email(self):
+		"""
+		Test if email field can be submitted blank.
+		"""
+		data = {
+			'username': 'testUser1',
+			'email': '',
+			'password': 'testPassword'
+		}
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 	
