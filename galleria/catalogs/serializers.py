@@ -32,10 +32,12 @@ class CategorySerializer(serializers.ModelSerializer):
 class CatalogSerializer(serializers.ModelSerializer):
 	owner = serializers.ReadOnlyField(source='owner.username')
 	categories = CategorySerializer(many=True, read_only=True)
+	url = serializers.HyperlinkedIdentityField(view_name='catalog-detail', lookup_field='slug')
+	lookup_field = 'slug'
 
 	class Meta:
 		model = Catalog
 		fields = (
-			'id', 'owner', 'name', 'created_on', 'description', 'contact_address', 
+			'id', 'owner', 'url', 'name', 'created_on', 'description', 'contact_address', 
 			'contact_email', 'contact_phone', 'categories',
 		)
