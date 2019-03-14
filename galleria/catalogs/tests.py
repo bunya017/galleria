@@ -395,3 +395,4 @@ class ProductImageListTest(APITestCase):
 		}
 		response = self.client.post(self.url, data, format='multipart')
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+		self.assertEqual(ProductImage.objects.all().count(), 1)
