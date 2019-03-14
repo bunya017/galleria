@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Catalog, Category, ProductEntry, ProductImage
+from .relations import ParameterisedHyperlinkedIdentityField
 
 
 
@@ -23,16 +24,26 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
 	product_entries = ProductEntrySerializer(many=True, read_only=True)
+	url = ParameterisedHyperlinkedIdentityField(
+		view_name='category-detail',
+		lookup_fields=(
+			('catalog.slug', 'catalog__slug'),
+			('slug', 'slug'),
+		)
+	)
 
 	class Meta:
 		model = Category
-		fields = ('id', 'name','catalog','created_on','description', 'product_entries')
+		fields = ('id', 'url', 'name','catalog','created_on','description',
+			'product_entries',
+		)
 
 
 class CatalogSerializer(serializers.ModelSerializer):
 	owner = serializers.ReadOnlyField(source='owner.username')
 	categories = CategorySerializer(many=True, read_only=True)
-	url = serializers.HyperlinkedIdentityField(view_name='catalog-detail', lookup_field='slug')
+	url = serializers.HyperlinkedIdentityField(
+		view_name='catalog-detail', lookup_field='slug')
 	lookup_field = 'slug'
 
 	class Meta:
