@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import NotAuthenticated
-from .models import Catalog
-from .serializers import CatalogSerializer
+from .models import Catalog, Category
+from .serializers import CatalogSerializer, CategorySerializer
 
 
 
@@ -27,3 +27,12 @@ class CatalogDetail(generics.RetrieveAPIView):
 	permission_classes = (permissions.AllowAny,)
 	queryset = Catalog.objects.all()
 	lookup_field = 'slug'
+
+
+class CategoryList(generics.ListCreateAPIView):
+	serializer_class = CategorySerializer
+
+	def get_queryset(self):
+		slug = self.kwargs['catalog__slug']
+		queryset = Category.objects.filter(catalog__slug=slug)
+		return queryset
