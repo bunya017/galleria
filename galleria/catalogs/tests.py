@@ -10,7 +10,7 @@ class CatalogListTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
 		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword')
-		self.url = reverse('catalogs-list')
+		self.url = reverse('catalog-list')
 		Catalog.objects.create(
 			owner=self.user1,
 			name='Test Catalogs Inc.',
@@ -164,7 +164,7 @@ class CatalogDetailTest(APITestCase):
 			contact_phone='08011223344',
 		)
 		self.data = 'Test Catalogs Inc'
-		self.url = reverse('catalogs-detail', args=[self.data])
+		self.url = reverse('catalog-detail', args=[self.data])
 
 	def test_authenticated_user_can_retrieve(self):
 		"""
