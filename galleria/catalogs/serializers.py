@@ -22,14 +22,14 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-	product_enties = ProductEntrySerializer(many=True)
+	product_entries = ProductEntrySerializer(many=True)
 
 	class Meta:
 		model = Category
-		fields = ('id', 'name','catalog','created_on','description', 'product_enties')
+		fields = ('id', 'name','catalog','created_on','description', 'product_entries')
 
 
-class CatalogSerializer(models.ModelSerializer):
+class CatalogSerializer(serializers.ModelSerializer):
 	categories = CategorySerializer(many=True)
 
 	class Meta:
