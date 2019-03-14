@@ -56,3 +56,9 @@ class ProductEntryList(generics.ListCreateAPIView):
 	def perform_create(self, serializer):
 		data = serializer.validated_data
 		serializer.save(created_by=self.request.user)
+
+
+class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = ProductEntrySerializer
+	queryset = ProductEntry.objects.all()
+	lookup_fields = ('category__catalog__slug', 'slug')
