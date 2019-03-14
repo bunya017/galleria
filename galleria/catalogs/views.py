@@ -28,7 +28,6 @@ class CatalogDetail(generics.RetrieveAPIView):
 	Catalog Detail endpoint to be viewed by visitors.
 	"""
 	serializer_class = CatalogSerializer
-	permission_classes = (permissions.AllowAny,)
 	queryset = Catalog.objects.all()
 	lookup_field = 'slug'
 
@@ -70,4 +69,8 @@ class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestro
 class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
 	serializer_class = ProductImageSerializer
 	queryset = ProductImage.objects.all()
-	lookup_fields = ('product__category__catalog__slug', 'product__slug', 'product__reference_id')
+	lookup_fields = (
+		'product__category__catalog__slug',
+		'product__slug',
+		'product__reference_id',
+	)
