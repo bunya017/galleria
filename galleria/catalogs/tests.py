@@ -58,3 +58,12 @@ class CatalogListTest(APITestCase):
 		self.client.login(username='testUser', password='testPassword')
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+	def test_catalog_list_owner(self):
+		"""
+		Test if request.user is the returned catalogs list owner.
+		"""
+		self.client.login(username='testUser1', password='testPassword')
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data[0]['owner'], 'testUser1')
