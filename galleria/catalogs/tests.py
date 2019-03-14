@@ -403,7 +403,7 @@ class ProductEntryDetailTest(APITestCase):
 class ProductImageListTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
-		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.user1 = User.objects.create_user('testUser1', 'testEmail@mail1.com', 'testPassword')
 		self.catalog = Catalog.objects.create(
 			owner=self.user,
 			name='Test Catalogs Inc.',
@@ -454,4 +454,16 @@ class ProductImageListTest(APITestCase):
 	def test_get_product_image_list(self):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(ProductImage.objects.all().count(), 0)
+
+	def test_non_owner_can_add_product_image(self):
+		self.client.login(username='testUser1', password='testPassword')
+		photo_file = generate_photo('test_image')
+		data = {
+			'product': self.product.id,
+			'title': 'tee-shirt-blue-001',
+			'photo': photo_file,
+		}
+		response = self.client.post(self.url, data, format='multipart')
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 		self.assertEqual(ProductImage.objects.all().count(), 0)
