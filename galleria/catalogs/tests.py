@@ -159,7 +159,7 @@ class CatalogListTest(APITestCase):
 class CatalogDetailTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
-		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword1')		
+		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword1')
 		self.catalog = Catalog.objects.create(
 			owner=self.user,
 			name='Test Catalogs Inc',
@@ -206,6 +206,7 @@ class CatalogDetailTest(APITestCase):
 class CategoryListTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword1')
 		self.catalog = Catalog.objects.create(
 			owner=self.user,
 			name='Test Catalogs Inc.',
@@ -233,10 +234,17 @@ class CategoryListTest(APITestCase):
 		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 		self.assertEqual(Category.objects.all().count(), 0)
 
+	def test_non_catalog_owner_can_create_category(self):
+		self.client.login(username='testUser1', password='testPassword1')
+		response = self.client.post(self.url, self.data)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		self.assertEqual(Category.objects.all().count(), 0)
+
 
 class CategoryDetailTest(APITestCase):
 	def setUp(self):
 		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.user1 = User.objects.create_user('testUser1', 'testEmail1@mail.com', 'testPassword1')
 		self.catalog = Catalog.objects.create(
 			owner=self.user,
 			name='Test Catalogs Inc.',
@@ -254,7 +262,8 @@ class CategoryDetailTest(APITestCase):
 			kwargs={
 				'catalog__slug': self.catalog.slug,
 				'slug': self.category.slug,
-			})
+			}
+		)
 
 	def test_autenticated_user_can_get_category_details(self):
 		self.client.login(username='testUser', password='testPassword')
@@ -266,6 +275,20 @@ class CategoryDetailTest(APITestCase):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(response.data['name'], self.category.name)
+
+	def test_non_catalog_owner_can_update_category(self):
+		payload = {
+			'name': 'Kids Clothing by user1',
+			'catalog': self.catalog,
+			'description': 'Clothes for kids by user1.',
+		}
+		self.client.login(username='testUser1', password='testPassword1')
+		response = self.client.put(self.url, payload)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		self.assertEqual(Category.objects.filter(
+			name=self.category.name, catalog=self.catalog).count(), 1)
+		self.assertEqual(Category.objects.filter(
+			name=payload['name'], catalog=self.catalog).count(), 0)
 
 
 class ProductEntryListTest(APITestCase):
