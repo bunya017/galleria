@@ -73,7 +73,6 @@ class ProductEntry(models.Model):
 	last_modified = models.DateTimeField(auto_now=True)
 
 	class Meta:
-		unique_together = ('name', 'category')
 		verbose_name = 'Product'
 		verbose_name_plural = 'Products'
 
