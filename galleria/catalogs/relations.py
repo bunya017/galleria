@@ -27,11 +27,8 @@ class ParameterisedHyperlinkedIdentityField(HyperlinkedIdentityField):
 			for field in model_field.split('.'):
 				attr = getattr(attr,field)
 			kwargs[url_param] = attr
-		try:
-			return reverse(view_name, kwargs=kwargs, request=request, format=format)
-		except NoReverseMatch:
-			pass
-		raise NoReverseMatch()
+		return reverse(view_name, kwargs=kwargs, request=request, format=format)
+
 
 
 class ParameterisedHyperlinkedRelatedField(HyperlinkedRelatedField):
@@ -49,14 +46,7 @@ class ParameterisedHyperlinkedRelatedField(HyperlinkedRelatedField):
 			for field in model_field.split('.'):
 				attr = getattr(attr,field)
 			kwargs[url_param] = attr
-		try:
-			return {
-				'name': obj.name,
-				'url': reverse(view_name, kwargs=kwargs, request=request, format=format)
-			}
-		except NoReverseMatch:
-			pass
-		raise NoReverseMatch()
+		return reverse(view_name, kwargs=kwargs, request=request, format=format)
 
 	def get_object(self, view_name, view_args, view_kwargs):
 		kwargs = {}
