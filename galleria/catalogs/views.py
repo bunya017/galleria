@@ -7,7 +7,6 @@ from .serializers import CatalogSerializer
 
 class CatalogList(generics.ListCreateAPIView):
 	serializer_class = CatalogSerializer
-	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 	def get_queryset(self):
 		try:
