@@ -28,6 +28,10 @@ class Catalog(models.Model):
 	contact_email = models.CharField(max_length=100)
 	contact_phone = models.CharField(max_length=50)
 
+	class Meta:
+		verbose_name = 'Catalog'
+		verbose_name_plural = 'Catalogs'
+
 	def __str__(self):
 		return self.name
 
@@ -39,6 +43,10 @@ class ProductEntry(models.Model):
 	created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 	created_on = models.DateTimeField(auto_now_add=True)
 	last_modified = models.DateTimeField(auto_now=True)
+
+	class Meta:
+		verbose_name = 'Product'
+		verbose_name_plural = 'Products'
 
 	def __str__(self):
 		return self.name
