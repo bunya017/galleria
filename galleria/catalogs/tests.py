@@ -275,7 +275,6 @@ class ProductEntryListTest(APITestCase):
 			'category': self.category.id,
 			'description': 'Blue tee-shirt for kids.',
 			'price': 3000,
-			'reference_number': 'KTS001',
 		}
 
 	def test_autenticated_user_can_create_productEntry(self):
