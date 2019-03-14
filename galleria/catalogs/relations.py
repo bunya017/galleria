@@ -1,6 +1,8 @@
 from rest_framework.relations import HyperlinkedIdentityField, HyperlinkedRelatedField
 from rest_framework.reverse import reverse
 
+
+
 class ParameterisedHyperlinkedIdentityField(HyperlinkedIdentityField):
 	"""
 	Represents the instance, or a property on the instance, using hyperlinking.
@@ -38,6 +40,16 @@ class ParameterisedHyperlinkedRelatedField(HyperlinkedRelatedField):
 	def __init__(self, *args, **kwargs):
 		self.lookup_fields = kwargs.pop('lookup_fields', self.lookup_fields)
 		super(ParameterisedHyperlinkedRelatedField, self).__init__(*args, **kwargs)
+
+	def to_representation(self, obj):
+		"""
+		Overwrite default represention
+		"""
+		request = self.context.get('request')
+		return {
+			"name": obj.name,
+			"url": self.get_url(obj, self.view_name, request, self.format)
+		}
 
 	def get_url(self, obj, view_name, request, format):
 		kwargs = {}
