@@ -237,7 +237,7 @@ class CategoryDetailTest(APITestCase):
 				'slug': self.category.slug,
 			})
 
-	def test_autenticated_user_can_get_category_deatils(self):
+	def test_autenticated_user_can_get_category_details(self):
 		self.client.login(username='testUser', password='testPassword')
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
