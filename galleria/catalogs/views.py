@@ -39,6 +39,10 @@ class CatalogDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CategoryList(generics.ListCreateAPIView):
 	serializer_class = CategorySerializer
+	permission_classes = (
+		my_permissions.IsCategoryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 
 	def get_queryset(self):
 		slug = self.kwargs['catalog__slug']
