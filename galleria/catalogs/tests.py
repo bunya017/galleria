@@ -213,3 +213,38 @@ class CategoryListTest(APITestCase):
 		response = self.client.post(self.url, self.data)
 		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 		self.assertEqual(Category.objects.all().count(), 0)
+
+
+class CategoryDetailTest(APITestCase):
+	def setUp(self):
+		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.catalog = Catalog.objects.create(
+							owner=self.user,
+							name='Test Catalogs Inc.',
+							description='Catalog description',
+							contact_address='125 Test Avenue',
+							contact_email='testEmail@mail.com',
+							contact_phone='08011223344',
+		)
+		self.category = Category.objects.create(
+			name='Kids Clothing',
+			catalog=self.catalog,
+			description='Clothes for kids.',
+		)
+		self.url = reverse('category-detail',
+			kwargs={
+				'catalog__slug': self.catalog.slug,
+				'slug': self.category.slug,
+			})
+
+	def test_autenticated_user_can_get_category_deatils(self):
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['name'], self.category.name)
+
+	def test_unautenticated_user_can_get_category_details(self):
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['name'], self.category.name)
+
