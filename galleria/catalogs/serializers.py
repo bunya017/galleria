@@ -66,6 +66,6 @@ class CatalogSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Catalog
 		fields = (
-			'id', 'owner', 'url', 'name', 'created_on', 'description', 'contact_address', 
+			'id', 'owner', 'url', 'name', 'slug', 'created_on', 'description', 'contact_address', 
 			'contact_email', 'contact_phone', 'categories',
 		)
