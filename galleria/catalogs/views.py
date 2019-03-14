@@ -79,6 +79,10 @@ class ProductEntryList(generics.ListCreateAPIView):
 
 class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = ProductEntrySerializer
+	permission_classes = (
+		my_permissions.IsProductEntryOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
 	queryset = ProductEntry.objects.all()
 	lookup_fields = ('category__catalog__slug', 'slug')
 
