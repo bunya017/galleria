@@ -33,4 +33,16 @@ class UserRegistrationTest(APITestCase):
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+	def test_unique_email(self):
+		"""
+		Test if an existing email can be used.
+		"""
+		data = {
+			'username': 'testUser1',
+			'email': 'testEmail@mail.com',
+			'password': 'testPassword'
+		}
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 	
