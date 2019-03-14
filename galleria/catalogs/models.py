@@ -50,7 +50,7 @@ class Category(models.Model):
 
 
 class ProductEntry(models.Model):
-	name = models.CharField(max_length=75)
+	name = models.CharField(max_length=150)
 	category = models.ForeignKey(Category, on_delete=models.CASCADE)
 	description = models.CharField(max_length=355)
 	price = models.DecimalField(max_digits=12, decimal_places=2)
@@ -65,3 +65,13 @@ class ProductEntry(models.Model):
 
 	def __str__(self):
 		return self.name
+
+
+class ProductImage(models.Model):
+	product = models.ForeignKey(ProductEntry, on_delete=models.CASCADE)
+	title = models.CharField(max_length=150)
+	photo = models.ImageField(upload_to='uploads/', blank=True)
+
+	class Meta:
+		verbose_name = 'Product Image'
+		verbose_name_plural = 'Product Images'
