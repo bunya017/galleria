@@ -50,15 +50,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class CatalogSerializer(serializers.ModelSerializer):
 	owner = serializers.ReadOnlyField(source='owner.username')
-	categories = relations.ParameterisedHyperlinkedRelatedField(
-		view_name='category-detail',
-		lookup_fields=(
-			('catalog.slug', 'catalog__slug'),
-			('slug', 'slug')
-		),
-		many=True,
-		read_only=True
-	)
+	categories = CategorySerializer(many=True, read_only=True)
 	url = serializers.HyperlinkedIdentityField(
 		view_name='catalog-detail', lookup_field='slug')
 	lookup_field = 'slug'
