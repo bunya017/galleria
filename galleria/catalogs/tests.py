@@ -296,3 +296,39 @@ class ProductEntryListTest(APITestCase):
 	def test_unautenticated_user_can_get_productEntry_list(self):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class ProductEntryDetailTest(APITestCase):
+	def setUp(self):
+		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.catalog = Catalog.objects.create(
+			owner=self.user,
+			name='Test Catalogs Inc.',
+			description='Catalog description',
+			contact_address='125 Test Avenue',
+			contact_email='testEmail@mail.com',
+			contact_phone='08011223344',
+		)
+		self.category = Category.objects.create(
+			name='Kids Clothing',
+			catalog=self.catalog,
+			description='Clothes for kids.',
+		)
+		self.produuct = ProductEntry.objects.create(
+			name='Tee Shirt',
+			category=self.category,
+			description='Blue tee-shirt for kids.',
+			price=3000,
+			created_by=self.user,
+		)
+		self.url = reverse('productentry-detail',
+			kwargs={
+				'category__catalog__slug': self.catalog.slug,
+				'slug': self.produuct.slug,
+				'reference_id': self.produuct.reference_id,
+			}
+		)
+
+	def test_get_product_entry_detail(self):
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
