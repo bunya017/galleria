@@ -150,3 +150,35 @@ class CatalogListTest(APITestCase):
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 		self.assertIn('contact_phone', response.data.keys())
+
+
+class CatalogDetailTest(APITestCase):
+	def setUp(self):
+		self.user = User.objects.create_user('testUser', 'testEmail@mail.com', 'testPassword')
+		self.catalog = Catalog.objects.create(
+			owner=self.user,
+			name='Test Catalogs Inc',
+			description='Catalog description',
+			contact_address='125 Test Avenue',
+			contact_email='testEmail@mail.com',
+			contact_phone='08011223344',
+		)
+		self.data = 'Test Catalogs Inc'
+		self.url = reverse('catalogs-detail', args=[self.data])
+
+	def test_authenticated_user_can_retrieve(self):
+		"""
+		Test if authenticated user can retrieve CatalogDetail.
+		"""
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['name'], self.data)
+
+	def test_unauthenticated_user_can_retrieve(self):
+		"""
+		Test if unauthenticated user can retrieve CatalogDetail.
+		"""
+		response = self.client.get(self.url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['name'], self.data)
