@@ -53,11 +53,14 @@ class CatalogListTest(APITestCase):
 			'description': '',
 			'contact_address': '',
 			'contact_email': '',
-			'contact_email': '',
+			'contact_phone': '',
 		}
+		data_keys_list = list(data.keys())
 		self.client.login(username='testUser', password='testPassword')
 		response = self.client.post(self.url, data)
+		response_keys_list = list(response.data.keys())
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertEqual(data_keys_list, response_keys_list)
 
 	def test_catalog_list_owner(self):
 		"""
@@ -82,3 +85,68 @@ class CatalogListTest(APITestCase):
 		self.client.login(username='testUser', password='testPassword')
 		response = self.client.post(self.url, data)
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn('name', response.data.keys())
+
+	def test_blank_description(self):
+		"""
+		Test if description field submitted blank is allowed.
+		"""
+		data = {
+			'name': 'Test One Catalogs Inc.',
+			'description': '',
+			'contact_address': '125 Test Avenue',
+			'contact_email': 'testEmail@mail.com',
+			'contact_phone': '08011223344',
+		}
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn('description', response.data.keys())
+
+	def test_blank_contact_address(self):
+		"""
+		Test if contact address field submitted blank is allowed.
+		"""
+		data = {
+			'name': 'Test One Catalogs Inc.',
+			'description': 'Catalog description',
+			'contact_address': '',
+			'contact_email': 'testEmail@mail.com',
+			'contact_phone': '08011223344',
+		}
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn('contact_address', response.data.keys())
+
+	def test_blank_contact_email(self):
+		"""
+		Test if contact email field submitted blank is allowed.
+		"""
+		data = {
+			'name': 'Test One Catalogs Inc.',
+			'description': 'Catalog description',
+			'contact_address': '125 Test Avenue',
+			'contact_email': '',
+			'contact_phone': '08011223344',
+		}
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn('contact_email', response.data.keys())
+
+	def test_blank_contact_phone(self):
+		"""
+		Test if contact phone field submitted blank is allowed.
+		"""
+		data = {
+			'name': 'Test One Catalogs Inc.',
+			'description': 'Catalog description',
+			'contact_address': '125 Test Avenue',
+			'contact_email': 'testEmail@mail.com',
+			'contact_phone': '',
+		}
+		self.client.login(username='testUser', password='testPassword')
+		response = self.client.post(self.url, data)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn('contact_phone', response.data.keys())
