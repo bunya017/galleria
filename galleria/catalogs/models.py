@@ -23,7 +23,7 @@ subscription_plan = models.CharField(
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=150, unique=True)
-	slug = models.SlugField(unique=True)
+	slug = models.SlugField()
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255)
 	contact_address = models.CharField(max_length=255)
@@ -45,7 +45,7 @@ class Catalog(models.Model):
 class Category(models.Model):
 	name = models.CharField(max_length=150)
 	catalog = models.ForeignKey(Catalog, related_name='categories', on_delete=models.CASCADE)
-	slug = models.SlugField(unique=True)
+	slug = models.SlugField()
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255, blank=True)
 
@@ -64,7 +64,7 @@ class Category(models.Model):
 class ProductEntry(models.Model):
 	name = models.CharField(max_length=150)
 	category = models.ForeignKey(Category, related_name='product_entries', on_delete=models.CASCADE)
-	slug = models.SlugField(unique=True)
+	slug = models.SlugField()
 	description = models.CharField(max_length=355)
 	price = models.DecimalField(max_digits=12, decimal_places=2)
 	reference_number = models.CharField(max_length=15)
