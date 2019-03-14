@@ -63,6 +63,7 @@ class Category(models.Model):
 class ProductEntry(models.Model):
 	name = models.CharField(max_length=150)
 	category = models.ForeignKey(Category, related_name='product_entries', on_delete=models.CASCADE)
+	slug = models.SlugField(unique=True)
 	description = models.CharField(max_length=355)
 	price = models.DecimalField(max_digits=12, decimal_places=2)
 	reference_number = models.CharField(max_length=15)
@@ -73,6 +74,10 @@ class ProductEntry(models.Model):
 	class Meta:
 		verbose_name = 'Product'
 		verbose_name_plural = 'Products'
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.name)
+		super(ProductEntry, self).save(*args, **kwargs)
 
 	def __str__(self):
 		return self.name
