@@ -26,4 +26,4 @@ class CatalogDetail(generics.RetrieveAPIView):
 	serializer_class = CatalogSerializer
 	permission_classes = (permissions.AllowAny,)
 	queryset = Catalog.objects.all()
-	lookup_field= 'name'
+	lookup_field = 'slug'
