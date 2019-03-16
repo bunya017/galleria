@@ -61,3 +61,4 @@ class CatalogSerializer(serializers.ModelSerializer):
 			'id', 'owner', 'url', 'name', 'slug', 'created_on', 'description', 'contact_address', 
 			'contact_email', 'contact_phone', 'categories',
 		)
+		extra_kwargs = {'slug': {'read_only': True}}
