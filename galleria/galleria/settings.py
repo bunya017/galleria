@@ -117,6 +117,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
+    'DATETIME_FORMAT': '%a, %d %b %Y %H:%M',
 }
 
 
@@ -145,3 +146,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# django cors
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8080',
+)

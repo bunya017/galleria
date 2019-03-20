@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Catalog, Category, ProductEntry, ProductImage
-from .relations import ParameterisedHyperlinkedIdentityField
+from . import relations
 
 
 
@@ -13,7 +13,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductEntrySerializer(serializers.ModelSerializer):
 	photos = ProductImageSerializer(many=True, read_only=True)
-	url = ParameterisedHyperlinkedIdentityField(
+	url = relations.ParameterisedHyperlinkedIdentityField(
 		view_name='productentry-detail',
 		lookup_fields=(
 			('category.catalog.slug', 'category__catalog__slug'),
@@ -32,8 +32,9 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
 	product_entries = ProductEntrySerializer(many=True, read_only=True)
-	url = ParameterisedHyperlinkedIdentityField(
+	url = relations.ParameterisedHyperlinkedRelatedField(
 		view_name='category-detail',
+		read_only=True,
 		lookup_fields=(
 			('catalog.slug', 'catalog__slug'),
 			('slug', 'slug'),
@@ -57,6 +58,7 @@ class CatalogSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Catalog
 		fields = (
-			'id', 'owner', 'url', 'name', 'created_on', 'description', 'contact_address', 
+			'id', 'owner', 'url', 'name', 'slug', 'created_on', 'description', 'contact_address', 
 			'contact_email', 'contact_phone', 'categories',
 		)
+		extra_kwargs = {'slug': {'read_only': True}}
