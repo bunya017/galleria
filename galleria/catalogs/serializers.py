@@ -32,7 +32,7 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
 	product_entries = ProductEntrySerializer(many=True, read_only=True)
-	url = relations.ParameterisedHyperlinkedRelatedField(
+	url = relations.ParameterisedHyperlinkedIdentityField(
 		view_name='category-detail',
 		read_only=True,
 		lookup_fields=(
