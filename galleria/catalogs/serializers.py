@@ -46,6 +46,7 @@ class CategorySerializer(serializers.ModelSerializer):
 		fields = ('id', 'url', 'slug', 'name','catalog','created_on','description',
 			'product_entries',
 		)
+		extra_kwargs = {'slug': {'read_only': True}}
 
 
 class CatalogSerializer(serializers.ModelSerializer):
