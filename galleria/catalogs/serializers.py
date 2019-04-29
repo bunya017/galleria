@@ -8,7 +8,7 @@ from . import relations
 class ProductImageSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ProductImage
-		fields = ('id', 'product', 'title', 'photo')
+		fields = ('id', 'product', 'photo')
 
 
 class ProductEntrySerializer(serializers.ModelSerializer):
