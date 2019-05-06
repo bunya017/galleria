@@ -12,7 +12,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductEntrySerializer(serializers.ModelSerializer):
-	photos = ProductImageSerializer(many=True)
+	photos = ProductImageSerializer(many=True, required=True)
 	url = relations.ParameterisedHyperlinkedIdentityField(
 		view_name='productentry-detail',
 		lookup_fields=(
@@ -28,6 +28,14 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 			'id', 'url', 'name', 'category', 'description', 'price', 
 			'created_on', 'last_modified', 'photos',
 		)
+
+	def create(self, validated_data):
+		request = self.context.get('request')
+		photos_data = request.FILES.getlist('photos')
+		product_entry = ProductEntry.objects.create(created_by=request.user, **validated_data)
+		for photo in photos_data:
+			ProductImage.objects.create(product=product_entry, photo=photo)
+		return product_entry
 
 
 class CategorySerializer(serializers.ModelSerializer):
