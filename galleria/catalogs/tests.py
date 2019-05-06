@@ -313,11 +313,23 @@ class ProductEntryListTest(APITestCase):
 				'category__catalog__slug': self.catalog.slug,
 			}
 		)
+		self.photos_data = [
+			{
+				'photo': generate_photo('testimage')
+			},
+			{
+				'photo': generate_photo('testimage1')
+			},
+			{
+				'photo': generate_photo('testimage2')
+			}
+		]
 		self.data = {
 			'name': 'Tee Shirt',
 			'category': self.category.id,
 			'description': 'Blue tee-shirt for kids.',
 			'price': 3000,
+			'photos': self.photos_data
 		}
 
 	def test_autenticated_user_can_create_productEntry(self):
