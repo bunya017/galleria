@@ -12,7 +12,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductEntrySerializer(serializers.ModelSerializer):
-	photos = ProductImageSerializer(many=True, required=True)
+	photos = ProductImageSerializer(many=True, read_only=True)
 	url = relations.ParameterisedHyperlinkedIdentityField(
 		view_name='productentry-detail',
 		lookup_fields=(
