@@ -72,10 +72,6 @@ class ProductEntryList(generics.ListCreateAPIView):
 		queryset = ProductEntry.objects.filter(category__catalog__slug=slug)
 		return queryset
 
-	def perform_create(self, serializer):
-		data = serializer.validated_data
-		serializer.save(created_by=self.request.user)
-
 
 class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = ProductEntrySerializer
