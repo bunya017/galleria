@@ -32,10 +32,16 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		request = self.context.get('request')
 		photos_data = request.FILES.getlist('photos')
-		product_entry = ProductEntry.objects.create(created_by=request.user, **validated_data)
-		for photo in photos_data:
-			ProductImage.objects.create(product=product_entry, photo=photo)
-		return product_entry
+		if not photos_data:
+			error = {
+				'photos': 'This field is required.'
+			}
+			raise serializers.ValidationError(error)
+		else:
+			product_entry = ProductEntry.objects.create(created_by=request.user, **validated_data)
+			for photo in photos_data:
+				ProductImage.objects.create(product=product_entry, photo=photo)
+			return product_entry
 
 
 class CategorySerializer(serializers.ModelSerializer):
