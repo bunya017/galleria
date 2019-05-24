@@ -26,7 +26,7 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 		model = ProductEntry
 		fields = (
 			'id', 'url', 'name', 'category', 'description', 'price', 
-			'created_on', 'last_modified', 'photos',
+			'reference_id', 'created_on', 'last_modified', 'photos',
 		)
 
 	def create(self, validated_data):
