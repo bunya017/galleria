@@ -29,6 +29,7 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 			'reference_id', 'created_on', 'last_modified', 'slug',
 			'photos',
 		)
+		depth = 1
 
 	def create(self, validated_data):
 		request = self.context.get('request')
