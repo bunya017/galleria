@@ -30,6 +30,14 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 			'photos',
 		)
 		depth = 2
+		extra_kwargs = {
+			'slug': {
+				'read_only': True
+			},
+			'reference_id': {
+				'read_only': True
+			}
+		}
 
 	def create(self, validated_data):
 		request = self.context.get('request')
