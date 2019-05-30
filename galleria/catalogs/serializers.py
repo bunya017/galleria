@@ -29,7 +29,6 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 			'reference_id', 'created_on', 'last_modified', 'slug',
 			'photos',
 		)
-		depth = 2
 		extra_kwargs = {
 			'slug': {
 				'read_only': True
@@ -52,6 +51,17 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 			for photo in photos_data:
 				ProductImage.objects.create(product=product_entry, photo=photo)
 			return product_entry
+
+
+class GetProductEntrySerializer(ProductEntrySerializer):
+	class Meta:
+		model = ProductEntry
+		depth = 2
+		fields = (
+			'id', 'url', 'name', 'category', 'description', 'price',
+			'reference_id', 'created_on', 'last_modified', 'slug',
+			'photos',
+		)
 
 
 class CategorySerializer(serializers.ModelSerializer):
