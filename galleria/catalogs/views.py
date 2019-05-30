@@ -5,6 +5,7 @@ from .models import Catalog, Category, ProductEntry, ProductImage
 from .serializers import (
 	CatalogSerializer, CategorySerializer,
 	ProductEntrySerializer, ProductImageSerializer,
+	GetProductEntrySerializer,
 )
 from .import permissions as my_permissions
 
@@ -61,7 +62,6 @@ class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPI
 
 
 class ProductEntryList(generics.ListCreateAPIView):
-	serializer_class = ProductEntrySerializer
 	permission_classes = (
 		my_permissions.IsProductEntryOwnerOrReadOnly,
 		permissions.IsAuthenticatedOrReadOnly,
@@ -72,19 +72,24 @@ class ProductEntryList(generics.ListCreateAPIView):
 		queryset = ProductEntry.objects.filter(category__catalog__slug=slug)
 		return queryset
 
-	def perform_create(self, serializer):
-		data = serializer.validated_data
-		serializer.save(created_by=self.request.user)
+	def get_serializer_class(self):
+		if self.request.method == 'GET':
+			return GetProductEntrySerializer
+		return ProductEntrySerializer
 
 
 class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
-	serializer_class = ProductEntrySerializer
 	permission_classes = (
 		my_permissions.IsProductEntryOwnerOrReadOnly,
 		permissions.IsAuthenticatedOrReadOnly,
 	)
 	queryset = ProductEntry.objects.all()
 	lookup_fields = ('category__catalog__slug', 'slug')
+
+	def get_serializer_class(self):
+		if self.request.method == 'GET':
+			return GetProductEntrySerializer
+		return ProductEntrySerializer
 
 
 class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):

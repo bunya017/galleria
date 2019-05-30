@@ -8,7 +8,7 @@ from . import relations
 class ProductImageSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ProductImage
-		fields = ('id', 'product', 'title', 'photo')
+		fields = ('id', 'product', 'photo')
 
 
 class ProductEntrySerializer(serializers.ModelSerializer):
@@ -26,13 +26,47 @@ class ProductEntrySerializer(serializers.ModelSerializer):
 		model = ProductEntry
 		fields = (
 			'id', 'url', 'name', 'category', 'description', 'price', 
-			'created_on', 'last_modified', 'photos',
+			'reference_id', 'created_on', 'last_modified', 'slug',
+			'photos',
+		)
+		extra_kwargs = {
+			'slug': {
+				'read_only': True
+			},
+			'reference_id': {
+				'read_only': True
+			}
+		}
+
+	def create(self, validated_data):
+		request = self.context.get('request')
+		photos_data = request.FILES.getlist('photos')
+		if not photos_data:
+			error = {
+				'photos': 'This field is required.'
+			}
+			raise serializers.ValidationError(error)
+		else:
+			product_entry = ProductEntry.objects.create(created_by=request.user, **validated_data)
+			for photo in photos_data:
+				ProductImage.objects.create(product=product_entry, photo=photo)
+			return product_entry
+
+
+class GetProductEntrySerializer(ProductEntrySerializer):
+	class Meta:
+		model = ProductEntry
+		depth = 2
+		fields = (
+			'id', 'url', 'name', 'category', 'description', 'price',
+			'reference_id', 'created_on', 'last_modified', 'slug',
+			'photos',
 		)
 
 
 class CategorySerializer(serializers.ModelSerializer):
 	product_entries = ProductEntrySerializer(many=True, read_only=True)
-	url = relations.ParameterisedHyperlinkedRelatedField(
+	url = relations.ParameterisedHyperlinkedIdentityField(
 		view_name='category-detail',
 		read_only=True,
 		lookup_fields=(
@@ -43,9 +77,10 @@ class CategorySerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Category
-		fields = ('id', 'url', 'name','catalog','created_on','description',
+		fields = ('id', 'url', 'slug', 'name','catalog','created_on','description',
 			'product_entries',
 		)
+		extra_kwargs = {'slug': {'read_only': True}}
 
 
 class CatalogSerializer(serializers.ModelSerializer):

@@ -103,3 +103,6 @@ class ProductImage(models.Model):
 	class Meta:
 		verbose_name = 'Product Image'
 		verbose_name_plural = 'Product Images'
+
+	def __str__(self):
+		return self.product.name + ' - photo'
