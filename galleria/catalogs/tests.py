@@ -313,17 +313,7 @@ class ProductEntryListTest(APITestCase):
 				'category__catalog__slug': self.catalog.slug,
 			}
 		)
-		self.photos_data = [
-			{
-				'photo': generate_photo('testimage')
-			},
-			{
-				'photo': generate_photo('testimage1')
-			},
-			{
-				'photo': generate_photo('testimage2')
-			}
-		]
+		self.photos_data = generate_photo('testimage')
 		self.data = {
 			'name': 'Tee Shirt',
 			'category': self.category.id,
