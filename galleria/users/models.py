@@ -18,5 +18,11 @@ class UserProfile(models.Model):
 	address = models.CharField(max_length=250)
 	phone = models.CharField(max_length=25)
 
-	def __str__(self): 
-		return self.user.username + ' (' + self.user.get_fullname() + ')'
+	class Meta:
+		verbose_name = 'User Profile'
+		verbose_name_plural = 'User Profiles'
+
+	def __str__(self):
+		if self.user.get_full_name():
+			return self.user.username + ' (' + self.user.get_full_name() + ')'
+		return self.user.username
