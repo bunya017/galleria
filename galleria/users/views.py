@@ -8,6 +8,7 @@ from .serializers import (
 	UserSerializer, UserProfileSerializer,
 	GetUserProfileSerializer
 )
+from . import permissions as my_user_permissions
 
 
 
@@ -35,6 +36,7 @@ class ObtainAuthToken(DRFObtainAuthToken):
 
 
 class UserProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+	permission_classes = (my_user_permissions.IsProfileOwner, )
 	queryset = UserProfile.objects.all()
 	lookup_field = 'user__username'
 
