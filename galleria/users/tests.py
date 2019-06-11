@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from .models import UserProfile
 
 
 class UserRegistrationTest(APITestCase):
@@ -23,6 +24,10 @@ class UserRegistrationTest(APITestCase):
 		self.assertEqual(User.objects.all().count(), 2)
 		# Make sure auth token is returned as response.
 		self.assertNotEqual(response.data['token'], '')
+		# Make sure user profile is created upon registration.
+		self.assertTrue(
+			UserProfile.objects.filter(user__username=data['username']).exists()
+		)
 
 	def test_unique_username(self):
 		"""

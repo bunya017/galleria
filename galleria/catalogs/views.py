@@ -7,7 +7,7 @@ from .serializers import (
 	ProductEntrySerializer, ProductImageSerializer,
 	GetProductEntrySerializer,
 )
-from .import permissions as my_permissions
+from . import permissions as my_permissions
 
 
 
