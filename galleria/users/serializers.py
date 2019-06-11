@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from .models import UserProfile
 
 
 
@@ -30,3 +31,12 @@ class UserSerializer(serializers.ModelSerializer):
 		user.set_password(validated_data['password'])
 		user.save()
 		return user
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+	user = UserSerializer(read_only=True)
+
+	class Meta:
+		model = UserProfile
+		fields = ('id', 'address', 'phone', 'user')
+		depth = 1
