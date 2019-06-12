@@ -116,3 +116,29 @@ class CollectionProduct(models.Model):
 	product = models.ForeignKey(
 		ProductEntry, related_name='collection_product', on_delete=models.CASCADE
 	)
+
+
+class Collection(models.Model):
+	name = models.CharField(max_length=150)
+	catalog = models.ForeignKey(Catalog, on_delete=models.CASCADE)
+	slug = models.SlugField(max_length=150)
+	description = models.TextField(blank=True)
+	products = models.ManyToManyField(
+		Product,
+		blank=True,
+		related_name='collections',
+		through=CollectionProduct,
+		through_fields=['collection', 'product']
+	)
+
+	class Meta:
+		unique_together = ('name', 'catalog')
+		verbose_name = 'Collection'
+		verbose_name_plural = 'Collections'
+
+	def __str__(self):
+		return self.name
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.name)
+		super(Collection, self).save(*args, **kwargs)
