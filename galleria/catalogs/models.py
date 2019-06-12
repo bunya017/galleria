@@ -124,7 +124,7 @@ class Collection(models.Model):
 	slug = models.SlugField(max_length=150)
 	description = models.TextField(blank=True)
 	products = models.ManyToManyField(
-		Product,
+		ProductEntry,
 		blank=True,
 		related_name='collections',
 		through=CollectionProduct,
