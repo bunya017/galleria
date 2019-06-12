@@ -28,6 +28,7 @@ def product_photo_upload_path(instance, filename):
 		filename,
 	)
 
+
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=150, unique=True)
@@ -106,3 +107,12 @@ class ProductImage(models.Model):
 
 	def __str__(self):
 		return self.product.name + ' - photo'
+
+
+class CollectionProduct(models.Model):
+	collection = models.ForeignKey(
+		'Collection', related_name='collection_product', on_delete=models.CASCADE
+	)
+	product = models.ForeignKey(
+		ProductEntry, related_name='collection_product', on_delete=models.CASCADE
+	)
