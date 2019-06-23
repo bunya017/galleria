@@ -117,6 +117,13 @@ class CollectionProduct(models.Model):
 		ProductEntry, related_name='collection_product', on_delete=models.CASCADE
 	)
 
+	class Meta:
+		verbose_name = "Collection Product"
+		verbose_name_plural = 'Collection Products'
+
+	def __str__(self): 
+		return self.collection.name + ' - ' + self.product.name
+
 
 class Collection(models.Model):
 	name = models.CharField(max_length=150)
