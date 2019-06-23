@@ -120,7 +120,7 @@ class CollectionProduct(models.Model):
 
 class Collection(models.Model):
 	name = models.CharField(max_length=150)
-	catalog = models.ForeignKey(Catalog, on_delete=models.CASCADE)
+	catalog = models.ForeignKey(Catalog, related_name='collections', on_delete=models.CASCADE)
 	slug = models.SlugField(max_length=150)
 	description = models.TextField(blank=True)
 	products = models.ManyToManyField(
