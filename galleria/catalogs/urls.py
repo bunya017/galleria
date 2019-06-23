@@ -26,5 +26,8 @@ urlpatterns = [
 	path('catalogs/<str:catalog__slug>/collections/', 
 		views.CollectionList.as_view(), name='collection-list',
 	),
+	path('catalogs/<str:catalog__slug>/collections/<str:slug>', 
+		views.CollectionDetail.as_view(), name='collection-detail',
+	),
 
 ]
