@@ -1,11 +1,15 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import NotAuthenticated
 from .mixins import MultipleFieldLookupMixin
-from .models import Catalog, Category, ProductEntry, ProductImage
+from .models import (
+	Catalog, Category, ProductEntry, ProductImage,
+	Collection, CollectionProduct
+)
 from .serializers import (
 	CatalogSerializer, CategorySerializer,
 	ProductEntrySerializer, ProductImageSerializer,
-	GetProductEntrySerializer,
+	GetProductEntrySerializer, CollectionProductSerializer,
+	CollectionSerializer
 )
 from . import permissions as my_permissions
 
@@ -104,3 +108,12 @@ class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
 		'product__slug',
 		'product__reference_id',
 	)
+
+
+class CollectionList(generics.ListCreateAPIView):
+	serializer_class = CollectionSerializer
+	
+	def get_queryset(self):
+		slug = self.kwargs['catalog__slug']
+		queryset = Collection.objects.filter(catalog__slug=slug)
+		return queryset
