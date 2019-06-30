@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import (
 	Catalog, Category, ProductEntry, ProductImage,
+	Collection, CollectionProduct
 )
 from . import relations
 
@@ -64,6 +65,15 @@ class GetProductEntrySerializer(ProductEntrySerializer):
 			'reference_id', 'created_on', 'last_modified', 'slug',
 			'photos',
 		)
+
+
+class CollectionProductSerializer(serializers.ModelSerializer):
+	id = serializers.ReadOnlyField(source='product.id')
+	name = serializers.ReadOnlyField(source='mproduct.name')
+
+	class Meta:
+		model = CollectionProduct
+		fields = ('id', 'name', 'collection', 'product')
 
 
 class CategorySerializer(serializers.ModelSerializer):
