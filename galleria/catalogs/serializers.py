@@ -76,6 +76,17 @@ class CollectionProductSerializer(serializers.ModelSerializer):
 		fields = ('id', 'name', 'collection', 'product')
 
 
+class CollectionSerializer(serializers.model):
+	collection_products = CollectionProductSerializer(
+		source='collectionproduct_set', many=True, read_only=True
+	)
+
+	class Meta:
+		model = Collection
+		fields = '__all__'
+		extra_kwargs = {'slug': {'read_only': True}}
+
+
 class CategorySerializer(serializers.ModelSerializer):
 	product_entries = ProductEntrySerializer(many=True, read_only=True)
 	url = relations.ParameterisedHyperlinkedIdentityField(
