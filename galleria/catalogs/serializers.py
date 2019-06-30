@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import (
 	Catalog, Category, ProductEntry, ProductImage,
-	Collection, CollectionProduct
 )
 from . import relations
 
@@ -86,36 +85,9 @@ class CategorySerializer(serializers.ModelSerializer):
 		extra_kwargs = {'slug': {'read_only': True}}
 
 
-class CollectionProductSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = CollectionProduct
-		fields = ('id', 'collection', 'product')
-		depth = 1
-
-
-class CollectionSerializer(serializers.ModelSerializer):
-	products = GetProductEntrySerializer(many=True, read_only=True)
-	url = relations.ParameterisedHyperlinkedIdentityField(
-		view_name='collection-detail',
-		read_only=True,
-		lookup_fields=(
-			('catalog.slug', 'catalog__slug'),
-			('slug', 'slug'),
-		)
-	)
-
-	class Meta:
-		model = Collection
-		fields = (
-			'id', 'url', 'name', 'catalog', 'slug', 'description', 'products'
-		)
-		extra_kwargs = {'slug': {'read_only': True}}
-
-
 class CatalogSerializer(serializers.ModelSerializer):
 	owner = serializers.ReadOnlyField(source='owner.username')
 	categories = CategorySerializer(many=True, read_only=True)
-	collections = CollectionSerializer(many=True, read_only=True)
 	url = serializers.HyperlinkedIdentityField(
 		view_name='catalog-detail', lookup_field='slug')
 	lookup_field = 'slug'
@@ -124,6 +96,6 @@ class CatalogSerializer(serializers.ModelSerializer):
 		model = Catalog
 		fields = (
 			'id', 'owner', 'url', 'name', 'slug', 'created_on', 'description', 'contact_address', 
-			'contact_email', 'contact_phone', 'categories', 'collections'
+			'contact_email', 'contact_phone', 'categories'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
