@@ -23,11 +23,4 @@ urlpatterns = [
 	path('catalogs/<str:product__category__catalog__slug>/p/<str:product__slug>/<str:reference_id>/photos/',
 		views.ProductImageList.as_view(), name='productimage-list',
 	),
-	path('catalogs/<str:catalog__slug>/collections/', 
-		views.CollectionList.as_view(), name='collection-list',
-	),
-	path('catalogs/<str:catalog__slug>/collections/<str:slug>', 
-		views.CollectionDetail.as_view(), name='collection-detail',
-	),
-
 ]
