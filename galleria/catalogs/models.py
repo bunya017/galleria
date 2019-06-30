@@ -138,3 +138,16 @@ class Collection(models.Model):
 
 	def __str__(self):
 		return self.name + ' - ' + self.catalog.name
+
+
+class CollectionProduct(models.Model):
+	product = models.ForeignKey(ProductEntry, on_delete=models.CASCADE)
+	collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = ('product', 'collection')
+		verbose_name = 'Collction Product'
+		verbose_name_plural = 'collection Products'
+
+	def __str__(self):
+		return self.product.name + ' - ' + self.Collection.name
