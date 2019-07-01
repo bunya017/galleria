@@ -70,6 +70,7 @@ class GetProductEntrySerializer(ProductEntrySerializer):
 class CollectionProductSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField(source='product.id')
 	name = serializers.ReadOnlyField(source='mproduct.name')
+	product = ProductEntrySerializer(read_only=True)
 
 	class Meta:
 		model = CollectionProduct
