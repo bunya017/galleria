@@ -29,4 +29,7 @@ urlpatterns = [
 	path('catalogs/<str:catalog__slug>/collections/<str:slug>/',
 		views.CollectionDetail.as_view(), name='collection-detail',
 	),
+	path('catalogs/<str:collection__catalog__slug>/collections/<str:collection__slug>/products',
+		views.CollectionProductList.as_view(), name='collectionproduct-list',
+	),
 ]

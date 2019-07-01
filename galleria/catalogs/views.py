@@ -123,3 +123,12 @@ class CollectionDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyA
 	serializer_class = CollectionSerializer
 	queryset = Collection.objects.all()
 	lookup_fields = ('catalog__slug', 'slug')
+
+
+class CollectionProductList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
+	serializer_class = CollectionProductSerializer
+	queryset = CollectionProduct.objects.all()
+	lookup_fields = (
+		'collection__catalog__slug',
+		'collection__slug'
+	)
