@@ -117,3 +117,9 @@ class CollectionList(generics.ListCreateAPIView):
 		slug = self.kwargs['catalog__slug']
 		queryset = Collection.objects.filter(catalog__slug=slug)
 		return queryset
+
+
+class CollectionDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = CollectionSerializer
+	queryset = Collection.objects.all()
+	lookup_fields = ('catalog__slug', 'slug')
