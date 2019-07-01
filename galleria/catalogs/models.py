@@ -134,7 +134,7 @@ class Collection(models.Model):
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.name)
-		super(collection, self).save(*args, **kwargs)
+		super(Collection, self).save(*args, **kwargs)
 
 	def __str__(self):
 		return self.name + ' - ' + self.catalog.name
@@ -150,4 +150,4 @@ class CollectionProduct(models.Model):
 		verbose_name_plural = 'collection Products'
 
 	def __str__(self):
-		return self.product.name + ' - ' + self.Collection.name
+		return self.product.name + ' - ' + self.collection.name
