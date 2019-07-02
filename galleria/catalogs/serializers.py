@@ -66,10 +66,10 @@ class GetProductEntrySerializer(ProductEntrySerializer):
 			'photos',
 		)
 
-
+		
 class CollectionProductSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField(source='product.id')
-	name = serializers.ReadOnlyField(source='mproduct.name')
+	name = serializers.ReadOnlyField(source='product.name')
 	product = ProductEntrySerializer(read_only=True)
 
 	class Meta:
