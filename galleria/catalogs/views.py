@@ -9,7 +9,7 @@ from .serializers import (
 	CatalogSerializer, CategorySerializer,
 	ProductEntrySerializer, ProductImageSerializer,
 	GetProductEntrySerializer, CollectionSerializer,
-	CollectionProductSerializer,
+	CollectionProductSerializer, AddCollectionProductSerializer
 )
 from . import permissions as my_permissions
 
@@ -126,9 +126,13 @@ class CollectionDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyA
 
 
 class CollectionProductList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
-	serializer_class = CollectionProductSerializer
 	queryset = CollectionProduct.objects.all()
 	lookup_fields = (
 		'collection__catalog__slug',
 		'collection__slug'
 	)
+
+	def get_serializer_class(self):
+		if self.request.method == 'GET':
+			return CollectionProductSerializer
+		return AddCollectionProductSerializer
