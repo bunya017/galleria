@@ -28,6 +28,7 @@ def product_photo_upload_path(instance, filename):
 		filename,
 	)
 
+
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=150, unique=True)
@@ -52,7 +53,9 @@ class Catalog(models.Model):
 
 class Category(models.Model):
 	name = models.CharField(max_length=150)
-	catalog = models.ForeignKey(Catalog, related_name='categories', on_delete=models.CASCADE)
+	catalog = models.ForeignKey(
+		Catalog, related_name='categories', on_delete=models.CASCADE
+	)
 	slug = models.SlugField()
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255, blank=True)
@@ -71,7 +74,9 @@ class Category(models.Model):
 
 class ProductEntry(models.Model):
 	name = models.CharField(max_length=150)
-	category = models.ForeignKey(Category, related_name='product_entries', on_delete=models.CASCADE)
+	category = models.ForeignKey(
+		Category, related_name='product_entries', on_delete=models.CASCADE
+	)
 	slug = models.SlugField()
 	description = models.CharField(max_length=355)
 	price = models.DecimalField(max_digits=12, decimal_places=2)
@@ -96,7 +101,9 @@ class ProductEntry(models.Model):
 
 
 class ProductImage(models.Model):
-	product = models.ForeignKey(ProductEntry, related_name='photos', on_delete=models.CASCADE)
+	product = models.ForeignKey(
+		ProductEntry, related_name='photos', on_delete=models.CASCADE
+	)
 	title = models.CharField(max_length=150)
 	photo = models.ImageField(upload_to=product_photo_upload_path, blank=True)
 
@@ -106,3 +113,41 @@ class ProductImage(models.Model):
 
 	def __str__(self):
 		return self.product.name + ' - photo'
+
+
+class Collection(models.Model):
+	name = models.CharField(max_length=100)
+	catalog = models.ForeignKey(
+		Catalog, related_name='collections', on_delete=models.CASCADE
+	)
+	slug = models.SlugField(max_length=120)
+	description = models.TextField(blank=True)
+	products = models.ManyToManyField(
+		ProductEntry, blank=True, related_name='collection_products',
+		through='CollectionProduct'
+	)
+
+	class Meta:
+		unique_together = ('name', 'catalog')
+		verbose_name = 'Collection'
+		verbose_name_plural = 'Collections'
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.name)
+		super(Collection, self).save(*args, **kwargs)
+
+	def __str__(self):
+		return self.name + ' - ' + self.catalog.name
+
+
+class CollectionProduct(models.Model):
+	product = models.ForeignKey(ProductEntry, on_delete=models.CASCADE)
+	collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = ('product', 'collection')
+		verbose_name = 'Collction Product'
+		verbose_name_plural = 'collection Products'
+
+	def __str__(self):
+		return self.product.name + ' - ' + self.collection.name

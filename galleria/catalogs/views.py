@@ -1,11 +1,15 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import NotAuthenticated
 from .mixins import MultipleFieldLookupMixin
-from .models import Catalog, Category, ProductEntry, ProductImage
+from .models import (
+	Catalog, Category, ProductEntry, ProductImage,
+	Collection, CollectionProduct,
+)
 from .serializers import (
 	CatalogSerializer, CategorySerializer,
 	ProductEntrySerializer, ProductImageSerializer,
-	GetProductEntrySerializer,
+	GetProductEntrySerializer, CollectionSerializer,
+	CollectionProductSerializer, AddCollectionProductSerializer
 )
 from . import permissions as my_permissions
 
@@ -103,4 +107,42 @@ class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
 		'product__category__catalog__slug',
 		'product__slug',
 		'product__reference_id',
+	)
+
+
+class CollectionList(generics.ListCreateAPIView):
+	serializer_class = CollectionSerializer
+
+	def get_queryset(self):
+		slug = self.kwargs['catalog__slug']
+		queryset = Collection.objects.filter(catalog__slug=slug)
+		return queryset
+
+
+class CollectionDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = CollectionSerializer
+	queryset = Collection.objects.all()
+	lookup_fields = ('catalog__slug', 'slug')
+
+
+class CollectionProductList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
+	queryset = CollectionProduct.objects.all()
+	lookup_fields = (
+		'collection__catalog__slug',
+		'collection__slug'
+	)
+
+	def get_serializer_class(self):
+		if self.request.method == 'GET':
+			return CollectionProductSerializer
+		return AddCollectionProductSerializer
+
+
+class CollectionProductDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = AddCollectionProductSerializer
+	queryset = CollectionProduct.objects.all()
+	lookup_fields = (
+		'collection__catalog__slug',
+		'collection__slug',
+		'product__slug'
 	)

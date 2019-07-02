@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Catalog, Category, ProductEntry, ProductImage
+from .models import (
+	Catalog, Category, ProductEntry, ProductImage,
+	Collection, CollectionProduct
+)
 from . import relations
 
 
@@ -63,6 +66,53 @@ class GetProductEntrySerializer(ProductEntrySerializer):
 			'photos',
 		)
 
+		
+class CollectionProductSerializer(serializers.ModelSerializer):
+	id = serializers.ReadOnlyField(source='product.id')
+	url = relations.ParameterisedHyperlinkedIdentityField(
+		view_name='collectionproduct-detail',
+		read_only=True,
+		lookup_fields=(
+			('collection.catalog.slug', 'collection__catalog__slug'),
+			('collection.slug', 'collection__slug'),
+			('product.slug', 'product__slug')
+		)
+	)
+	name = serializers.ReadOnlyField(source='product.name')
+	product = ProductEntrySerializer(read_only=True)
+
+	class Meta:
+		model = CollectionProduct
+		fields = ('id', 'url', 'name', 'collection', 'product')
+
+
+class AddCollectionProductSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = CollectionProduct
+		fields = ('product', 'collection')
+
+
+class CollectionSerializer(serializers.ModelSerializer):
+	collection_products = CollectionProductSerializer(
+		source='collectionproduct_set', many=True, read_only=True
+	)
+	url = relations.ParameterisedHyperlinkedIdentityField(
+		view_name='collection-detail',
+		read_only=True,
+		lookup_fields=(
+			('catalog.slug', 'catalog__slug'),
+			('slug', 'slug')
+		)
+	)
+
+	class Meta:
+		model = Collection
+		fields = (
+			'id', 'url', 'name', 'slug', 'description', 'catalog', 'collection_products'
+		)
+		extra_kwargs = {'slug': {'read_only': True}}
+
 
 class CategorySerializer(serializers.ModelSerializer):
 	product_entries = ProductEntrySerializer(many=True, read_only=True)
@@ -94,6 +144,6 @@ class CatalogSerializer(serializers.ModelSerializer):
 		model = Catalog
 		fields = (
 			'id', 'owner', 'url', 'name', 'slug', 'created_on', 'description', 'contact_address', 
-			'contact_email', 'contact_phone', 'categories',
+			'contact_email', 'contact_phone', 'categories'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
