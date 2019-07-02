@@ -32,4 +32,7 @@ urlpatterns = [
 	path('catalogs/<str:collection__catalog__slug>/collections/<str:collection__slug>/products/',
 		views.CollectionProductList.as_view(), name='collectionproduct-list',
 	),
+	path('catalogs/<str:collection__catalog__slug>/collections/<str:collection__slug>/products/<str:product__slug>/',
+		views.CollectionProductDetail.as_view(), name='collectionproduct-detail',
+	),
 ]

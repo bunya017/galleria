@@ -136,3 +136,13 @@ class CollectionProductList(MultipleFieldLookupMixin, generics.ListCreateAPIView
 		if self.request.method == 'GET':
 			return CollectionProductSerializer
 		return AddCollectionProductSerializer
+
+
+class CollectionProductDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = AddCollectionProductSerializer
+	queryset = CollectionProduct.objects.all()
+	lookup_fields = (
+		'collection__catalog__slug',
+		'collection__slug',
+		'product__slug'
+	)
