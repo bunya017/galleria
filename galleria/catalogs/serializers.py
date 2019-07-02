@@ -69,12 +69,21 @@ class GetProductEntrySerializer(ProductEntrySerializer):
 		
 class CollectionProductSerializer(serializers.ModelSerializer):
 	id = serializers.ReadOnlyField(source='product.id')
+	url = relations.ParameterisedHyperlinkedIdentityField(
+		view_name='collectionproduct-detail',
+		read_only=True,
+		lookup_fields=(
+			('collection.catalog.slug', 'collection__catalog__slug'),
+			('collection.slug', 'collection__slug'),
+			('product.slug', 'product__slug')
+		)
+	)
 	name = serializers.ReadOnlyField(source='product.name')
 	product = ProductEntrySerializer(read_only=True)
 
 	class Meta:
 		model = CollectionProduct
-		fields = ('id', 'name', 'collection', 'product')
+		fields = ('id', 'url', 'name', 'collection', 'product')
 
 
 class AddCollectionProductSerializer(serializers.ModelSerializer):
