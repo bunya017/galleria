@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
+from versatileimagefield.fields import VersatileImageField
 from .utils import generate_hash_id
 
 
@@ -105,7 +106,7 @@ class ProductImage(models.Model):
 		ProductEntry, related_name='photos', on_delete=models.CASCADE
 	)
 	title = models.CharField(max_length=150)
-	photo = models.ImageField(upload_to=product_photo_upload_path, blank=True)
+	photo = VersatileImageField(upload_to=product_photo_upload_path, blank=True)
 
 	class Meta:
 		verbose_name = 'Product Image'
