@@ -154,3 +154,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ORIGIN_WHITELIST = (
     'localhost:8080',
 )
+
+
+# Django-VesatileImageField conf
+
+VERSATILEIMAGEFIELD_SETTINGS = {
+    'create_images_on_demand': False,
+    'progressive_jpeg': True
+}
