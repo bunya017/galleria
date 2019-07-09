@@ -11,11 +11,7 @@ from . import relations
 
 class ProductImageSerializer(serializers.ModelSerializer):
 	photo = VersatileImageFieldSerializer(
-		sizes=[
-			('full_size', 'url'),
-			('thumbnail', 'thumbnail__100x100'),
-			('small', 'thumbnail__480x480')
-		]
+		sizes='product_image'
 	)
 
 	class Meta:
