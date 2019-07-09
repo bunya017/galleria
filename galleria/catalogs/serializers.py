@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from versatileimagefield.serializers import VersatileImageFieldSerializer
 from .models import (
 	Catalog, Category, ProductEntry, ProductImage,
 	Collection, CollectionProduct
@@ -9,6 +10,14 @@ from . import relations
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
+	photo = VersatileImageFieldSerializer(
+		sizes=[
+			('full_size', 'url'),
+			('thumbnail', 'thumbnail__100x100'),
+			('small', 'thumbnail__480x480')
+		]
+	)
+
 	class Meta:
 		model = ProductImage
 		fields = ('id', 'product', 'photo')
