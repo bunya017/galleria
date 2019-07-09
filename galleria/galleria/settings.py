@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'catalogs.apps.CatalogsConfig',
     'rest_framework.authtoken',
+    'versatileimagefield',
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ORIGIN_WHITELIST = (
     'localhost:8080',
 )
+
+
+# Django-VesatileImageField conf
+
+VERSATILEIMAGEFIELD_SETTINGS = {
+    'create_images_on_demand': False,
+    'progressive_jpeg': True
+}
+
+VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
+    'product_image': [
+        ('full_size', 'url'),
+        ('thumbnail', 'thumbnail__100x100'),
+        ('small', 'thumbnail__480x480')
+    ]
+}

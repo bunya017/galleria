@@ -1,6 +1,11 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.dispatch import receiver
 from django.utils.text import slugify
+
+from versatileimagefield.fields import VersatileImageField
+from versatileimagefield.image_warmer import VersatileImageFieldWarmer
+
 from .utils import generate_hash_id
 
 
@@ -20,6 +25,19 @@ subscription_plan = models.CharField(
 		choices=
 	)
 '''
+
+
+@receiver(models.signals.post_save, sender='catalogs.ProductImage')
+def warm_product_images(sender, instance, ** kwargs):
+	"""Ensures different Product image sizes are created post-save"""
+	product_img_warmer = VersatileImageFieldWarmer(
+	instance_or_queryset=instance,
+	rendition_key_set='product_image',
+	image_attr='photo'
+	)
+	num_created, failed_to_create = product_img_warmer.warm()
+
+
 def product_photo_upload_path(instance, filename):
 	return '{0}/product-images/{1}-{2}/{3}'.format(
 		instance.product.category.catalog.slug,
@@ -105,7 +123,7 @@ class ProductImage(models.Model):
 		ProductEntry, related_name='photos', on_delete=models.CASCADE
 	)
 	title = models.CharField(max_length=150)
-	photo = models.ImageField(upload_to=product_photo_upload_path, blank=True)
+	photo = VersatileImageField(upload_to=product_photo_upload_path, blank=True)
 
 	class Meta:
 		verbose_name = 'Product Image'
