@@ -46,10 +46,9 @@ def product_photo_upload_path(instance, filename):
 		filename,
 	)
 
-def background_photo_upload_path(instance, filename, image_type):
-	return '{0}/background-images/{1}/{2}/{3}'.format(
+def category_bg_photo_upload_path(instance, filename):
+	return '{0}/background-images/categories/{1}/{3}'.format(
 		instance.catalog.slug,
-		image_type,
 		instance.slug,
 		filename,
 	)
@@ -86,7 +85,7 @@ class Category(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255, blank=True)
 	background_image = VersatileImageField(
-		upload_to=background_photo_upload_path(image_type='categories'),
+		upload_to=category_bg_photo_upload_path,
 		blank=True
 	)
 
