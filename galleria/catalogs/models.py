@@ -38,6 +38,18 @@ def warm_product_images(sender, instance, ** kwargs):
 	num_created, failed_to_create = product_img_warmer.warm()
 
 
+@receiver(models.signals.post_save, sender='catalogs.Category')
+@receiver(models.signals.post_save, sender='catalogs.Collection')
+def warm_bg_images(sender, instance, ** kwargs):
+	"""Ensures different background image sizes are created post-save"""
+	bg_img_warmer = VersatileImageFieldWarmer(
+	instance_or_queryset=instance,
+	rendition_key_set='bg_image',
+	image_attr='background_image'
+	)
+	num_created, failed_to_create = bg_img_warmer.warm()
+
+
 def product_photo_upload_path(instance, filename):
 	return '{0}/product-images/{1}-{2}/{3}'.format(
 		instance.product.category.catalog.slug,
