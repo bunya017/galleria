@@ -140,7 +140,7 @@ class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Category
 		fields = ('id', 'url', 'slug', 'name','catalog','created_on','description',
-			'product_entries', 'background_image'
+			'background_image', 'product_entries'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
 
