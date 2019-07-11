@@ -133,11 +133,14 @@ class CategorySerializer(serializers.ModelSerializer):
 			('slug', 'slug'),
 		)
 	)
+	background_image = VersatileImageFieldSerializer(
+		sizes='bg_image'
+	)
 
 	class Meta:
 		model = Category
 		fields = ('id', 'url', 'slug', 'name','catalog','created_on','description',
-			'product_entries',
+			'product_entries', 'background_image'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
 
