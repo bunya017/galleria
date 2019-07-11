@@ -38,11 +38,37 @@ def warm_product_images(sender, instance, ** kwargs):
 	num_created, failed_to_create = product_img_warmer.warm()
 
 
+@receiver(models.signals.post_save, sender='catalogs.Category')
+@receiver(models.signals.post_save, sender='catalogs.Collection')
+def warm_bg_images(sender, instance, ** kwargs):
+	"""Ensures different background image sizes are created post-save"""
+	bg_img_warmer = VersatileImageFieldWarmer(
+	instance_or_queryset=instance,
+	rendition_key_set='bg_image',
+	image_attr='background_image'
+	)
+	num_created, failed_to_create = bg_img_warmer.warm()
+
+
 def product_photo_upload_path(instance, filename):
 	return '{0}/product-images/{1}-{2}/{3}'.format(
 		instance.product.category.catalog.slug,
 		instance.product.slug,
 		instance.product.reference_id,
+		filename,
+	)
+
+def category_bg_photo_upload_path(instance, filename):
+	return '{0}/background-images/categories/{1}/{2}'.format(
+		instance.catalog.slug,
+		instance.slug,
+		filename,
+	)
+
+def collection_bg_photo_upload_path(instance, filename):
+	return '{0}/background-images/collections/{1}/{2}'.format(
+		instance.catalog.slug,
+		instance.slug,
 		filename,
 	)
 
@@ -77,6 +103,10 @@ class Category(models.Model):
 	slug = models.SlugField()
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255, blank=True)
+	background_image = VersatileImageField(
+		upload_to=category_bg_photo_upload_path,
+		blank=True
+	)
 
 	class Meta:
 		verbose_name_plural = 'Categories'
@@ -143,6 +173,10 @@ class Collection(models.Model):
 	products = models.ManyToManyField(
 		ProductEntry, blank=True, related_name='collection_products',
 		through='CollectionProduct'
+	)
+	background_image = VersatileImageField(
+		upload_to=collection_bg_photo_upload_path,
+		blank=True
 	)
 
 	class Meta:
