@@ -47,7 +47,14 @@ def product_photo_upload_path(instance, filename):
 	)
 
 def category_bg_photo_upload_path(instance, filename):
-	return '{0}/background-images/categories/{1}/{3}'.format(
+	return '{0}/background-images/categories/{1}/{2}'.format(
+		instance.catalog.slug,
+		instance.slug,
+		filename,
+	)
+
+def collection_bg_photo_upload_path(instance, filename):
+	return '{0}/background-images/collections/{1}/{2}'.format(
 		instance.catalog.slug,
 		instance.slug,
 		filename,
@@ -156,7 +163,7 @@ class Collection(models.Model):
 		through='CollectionProduct'
 	)
 	background_image = VersatileImageField(
-		upload_to=background_photo_upload_path(image_type='collections'),
+		upload_to=collection_bg_photo_upload_path,
 		blank=True
 	)
 
