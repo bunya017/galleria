@@ -156,6 +156,10 @@ class Collection(models.Model):
 		ProductEntry, blank=True, related_name='collection_products',
 		through='CollectionProduct'
 	)
+	background_image = VersatileImageField(
+		upload_to=background_photo_upload_path(image_type='collections'),
+		blank=True
+	)
 
 	class Meta:
 		unique_together = ('name', 'catalog')
