@@ -118,7 +118,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 		model = Collection
 		fields = (
 			'id', 'url', 'name', 'slug', 'description', 'catalog',
-			'collection_products', 'background_image'
+			'background_image', 'collection_products'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
 
