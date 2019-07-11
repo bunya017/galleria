@@ -110,11 +110,15 @@ class CollectionSerializer(serializers.ModelSerializer):
 			('slug', 'slug')
 		)
 	)
+	background_image = VersatileImageFieldSerializer(
+		sizes='bg_image'
+	)
 
 	class Meta:
 		model = Collection
 		fields = (
-			'id', 'url', 'name', 'slug', 'description', 'catalog', 'collection_products'
+			'id', 'url', 'name', 'slug', 'description', 'catalog',
+			'collection_products', 'background_image'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
 
