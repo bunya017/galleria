@@ -46,6 +46,14 @@ def product_photo_upload_path(instance, filename):
 		filename,
 	)
 
+def background_photo_upload_path(instance, filename, image_type):
+	return '{0}/background-images/{1}/{2}/{3}'.format(
+		instance.catalog.slug,
+		image_type,
+		instance.slug,
+		filename,
+	)
+
 
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
