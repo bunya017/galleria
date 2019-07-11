@@ -85,6 +85,10 @@ class Category(models.Model):
 	slug = models.SlugField()
 	created_on = models.DateTimeField(auto_now_add=True)
 	description = models.CharField(max_length=255, blank=True)
+	background_image = VersatileImageField(
+		upload_to=background_photo_upload_path(image_type='categories'),
+		blank=True
+	)
 
 	class Meta:
 		verbose_name_plural = 'Categories'
