@@ -9,7 +9,8 @@ from .serializers import (
 	CatalogSerializer, CategorySerializer,
 	ProductEntrySerializer, ProductImageSerializer,
 	GetProductEntrySerializer, CollectionSerializer,
-	CollectionProductSerializer, AddCollectionProductSerializer
+	CollectionProductSerializer, AddCollectionProductSerializer,
+	GetCollectionSerializer
 )
 from . import permissions as my_permissions
 
@@ -111,7 +112,11 @@ class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
 
 
 class CollectionList(generics.ListCreateAPIView):
-	serializer_class = CollectionSerializer
+	
+	def get_serializer_class(self):
+		if self.request.method == 'GET':
+			return GetCollectionSerializer
+		return CollectionSerializer
 
 	def get_queryset(self):
 		slug = self.kwargs['catalog__slug']

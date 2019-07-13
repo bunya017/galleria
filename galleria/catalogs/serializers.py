@@ -122,6 +122,15 @@ class CollectionSerializer(serializers.ModelSerializer):
 			'background_image', 'collection_products'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
+
+
+class GetCollectionSerializer(CollectionSerializer):
+	class Meta:
+		model = Collection
+		fields = (
+			'id', 'url', 'name', 'slug', 'description', 'catalog',
+			'background_image', 'collection_products'
+		)
 		depth = 1
 
 
