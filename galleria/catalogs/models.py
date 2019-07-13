@@ -88,6 +88,7 @@ class Catalog(models.Model):
 		verbose_name_plural = 'Catalogs'
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.title()
 		self.slug = slugify(self.name)
 		super(Catalog, self).save(*args, **kwargs)
 
