@@ -124,6 +124,16 @@ class CollectionSerializer(serializers.ModelSerializer):
 		extra_kwargs = {'slug': {'read_only': True}}
 
 
+class GetCollectionSerializer(CollectionSerializer):
+	class Meta:
+		model = Collection
+		fields = (
+			'id', 'url', 'name', 'slug', 'description', 'catalog',
+			'background_image', 'collection_products'
+		)
+		depth = 1
+
+
 class CategorySerializer(serializers.ModelSerializer):
 	product_entries = ProductEntrySerializer(many=True, read_only=True)
 	url = relations.ParameterisedHyperlinkedIdentityField(
