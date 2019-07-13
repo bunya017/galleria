@@ -114,6 +114,7 @@ class Category(models.Model):
 		unique_together = ('name', 'catalog')
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.title()
 		self.slug = slugify(self.name)
 		super(Category, self).save(*args, **kwargs)
 
