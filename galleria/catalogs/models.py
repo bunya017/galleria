@@ -141,6 +141,7 @@ class ProductEntry(models.Model):
 		verbose_name_plural = 'Products'
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.title()
 		self.slug = slugify(self.name)
 		products_count = ProductEntry.objects.all().count()
 		self.reference_id = generate_hash_id(id=products_count+1, salt=self.name, len=16)
