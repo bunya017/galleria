@@ -188,6 +188,7 @@ class Collection(models.Model):
 		verbose_name_plural = 'Collections'
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.title()
 		self.slug = slugify(self.name)
 		super(Collection, self).save(*args, **kwargs)
 
