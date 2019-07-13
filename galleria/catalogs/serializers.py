@@ -111,6 +111,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 		)
 	)
 	background_image = VersatileImageFieldSerializer(
+		required=False,
 		sizes='bg_image'
 	)
 
