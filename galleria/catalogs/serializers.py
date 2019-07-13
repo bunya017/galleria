@@ -122,7 +122,6 @@ class CollectionSerializer(serializers.ModelSerializer):
 			'background_image', 'collection_products'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
-		depth = 1
 
 
 class CategorySerializer(serializers.ModelSerializer):
