@@ -111,6 +111,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 		)
 	)
 	background_image = VersatileImageFieldSerializer(
+		required=False,
 		sizes='bg_image'
 	)
 
@@ -121,6 +122,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 			'background_image', 'collection_products'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
+		depth = 1
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -134,6 +136,7 @@ class CategorySerializer(serializers.ModelSerializer):
 		)
 	)
 	background_image = VersatileImageFieldSerializer(
+		required=False,
 		sizes='bg_image'
 	)
 
