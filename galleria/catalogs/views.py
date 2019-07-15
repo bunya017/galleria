@@ -56,6 +56,16 @@ class CategoryList(generics.ListCreateAPIView):
 		queryset = Category.objects.filter(catalog__slug=slug)
 		return queryset
 
+	def perform_create(self, serializer):
+		name = serializer.validated_data['name']
+		error_message = 'A category named \'{0}\' already exists in this catalogue.'.format(
+			name.title()
+		)
+		try:
+			serializer.save()
+		except IntegrityError:
+			raise serializers.ValidationError(error_message)
+
 
 class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = CategorySerializer
