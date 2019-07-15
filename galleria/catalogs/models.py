@@ -88,6 +88,7 @@ class Catalog(models.Model):
 		verbose_name_plural = 'Catalogs'
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.title()
 		self.slug = slugify(self.name)
 		super(Catalog, self).save(*args, **kwargs)
 
@@ -113,6 +114,7 @@ class Category(models.Model):
 		unique_together = ('name', 'catalog')
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.title()
 		self.slug = slugify(self.name)
 		super(Category, self).save(*args, **kwargs)
 
@@ -139,6 +141,7 @@ class ProductEntry(models.Model):
 		verbose_name_plural = 'Products'
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.title()
 		self.slug = slugify(self.name)
 		products_count = ProductEntry.objects.all().count()
 		self.reference_id = generate_hash_id(id=products_count+1, salt=self.name, len=16)
@@ -185,6 +188,7 @@ class Collection(models.Model):
 		verbose_name_plural = 'Collections'
 
 	def save(self, *args, **kwargs):
+		self.name = self.name.title()
 		self.slug = slugify(self.name)
 		super(Collection, self).save(*args, **kwargs)
 

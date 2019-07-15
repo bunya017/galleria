@@ -1,4 +1,5 @@
-from rest_framework import generics, permissions
+from django.db.utils import IntegrityError
+from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import NotAuthenticated
 from .mixins import MultipleFieldLookupMixin
 from .models import (
@@ -54,6 +55,16 @@ class CategoryList(generics.ListCreateAPIView):
 		slug = self.kwargs['catalog__slug']
 		queryset = Category.objects.filter(catalog__slug=slug)
 		return queryset
+
+	def perform_create(self, serializer):
+		name = serializer.validated_data['name']
+		error_message = 'A category named \'{0}\' already exists in this catalogue.'.format(
+			name.title()
+		)
+		try:
+			serializer.save()
+		except IntegrityError:
+			raise serializers.ValidationError(error_message)
 
 
 class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -122,6 +133,16 @@ class CollectionList(generics.ListCreateAPIView):
 		slug = self.kwargs['catalog__slug']
 		queryset = Collection.objects.filter(catalog__slug=slug)
 		return queryset
+
+	def perform_create(self, serializer):
+		name = serializer.validated_data['name']
+		error_message = 'A collection named \'{0}\' already exists in this catalogue.'.format(
+			name.title()
+		)
+		try:
+			serializer.save()
+		except IntegrityError:
+			raise serializers.ValidationError(error_message)
 
 
 class CollectionDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
