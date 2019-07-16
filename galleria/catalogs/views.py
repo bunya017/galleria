@@ -136,9 +136,9 @@ class CollectionList(generics.ListCreateAPIView):
 
 	def perform_create(self, serializer):
 		name = serializer.validated_data['name']
-		error_message = 'A collection named \'{0}\' already exists in this catalogue.'.format(
-			name.title()
-		)
+		error_message = {
+			'name': ['A collection named \'{0}\' already exists in this catalogue.'.format(name.title())]
+		}
 		try:
 			serializer.save()
 		except IntegrityError:
@@ -149,6 +149,7 @@ class CollectionDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyA
 	serializer_class = CollectionSerializer
 	queryset = Collection.objects.all()
 	lookup_fields = ('catalog__slug', 'slug')
+
 
 
 class CollectionProductList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
