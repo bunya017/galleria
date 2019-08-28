@@ -38,6 +38,7 @@ def warm_product_images(sender, instance, ** kwargs):
 	num_created, failed_to_create = product_img_warmer.warm()
 
 
+@receiver(models.signals.post_save, sender='catalogs.Catalog')
 @receiver(models.signals.post_save, sender='catalogs.Category')
 @receiver(models.signals.post_save, sender='catalogs.Collection')
 def warm_bg_images(sender, instance, ** kwargs):
@@ -72,6 +73,12 @@ def collection_bg_photo_upload_path(instance, filename):
 		filename,
 	)
 
+def catalog_bg_photo_upload_path(instance, filename):
+	return '{0}/background-images/catalog/{1}'.format(
+		instance.slug,
+		filename,
+	)
+
 
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -82,6 +89,10 @@ class Catalog(models.Model):
 	contact_address = models.CharField(max_length=255)
 	contact_email = models.CharField(max_length=100)
 	contact_phone = models.CharField(max_length=50)
+	background_image = VersatileImageField(
+		upload_to=catalog_bg_photo_upload_path,
+		blank=True
+	)
 
 	class Meta:
 		verbose_name = 'Catalog'

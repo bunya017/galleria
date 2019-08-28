@@ -172,12 +172,16 @@ class CatalogSerializer(serializers.ModelSerializer):
 	collections = CollectionSerializer(many=True, read_only=True)
 	url = serializers.HyperlinkedIdentityField(
 		view_name='catalog-detail', lookup_field='slug')
+	background_image = VersatileImageFieldSerializer(
+		required=False,
+		sizes='bg_image'
+	)
 	lookup_field = 'slug'
 
 	class Meta:
 		model = Catalog
 		fields = (
 			'id', 'owner', 'url', 'name', 'slug', 'created_on', 'description', 'contact_address', 
-			'contact_email', 'contact_phone', 'categories', 'collections'
+			'contact_email', 'contact_phone', 'background_image', 'categories', 'collections'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
