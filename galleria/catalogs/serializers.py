@@ -157,9 +157,19 @@ class CategorySerializer(serializers.ModelSerializer):
 		extra_kwargs = {'slug': {'read_only': True}}
 
 
+class GetCategorySerializer(CategorySerializer):
+	class Meta:
+		model = Category
+		depth = 1
+		fields = ('id', 'url', 'slug', 'name','catalog','created_on','description',
+			'background_image', 'product_entries'
+		)
+
+
 class CatalogSerializer(serializers.ModelSerializer):
 	owner = serializers.ReadOnlyField(source='owner.username')
 	categories = CategorySerializer(many=True, read_only=True)
+	collections = CollectionSerializer(many=True, read_only=True)
 	url = serializers.HyperlinkedIdentityField(
 		view_name='catalog-detail', lookup_field='slug')
 	lookup_field = 'slug'
@@ -168,6 +178,6 @@ class CatalogSerializer(serializers.ModelSerializer):
 		model = Catalog
 		fields = (
 			'id', 'owner', 'url', 'name', 'slug', 'created_on', 'description', 'contact_address', 
-			'contact_email', 'contact_phone', 'categories'
+			'contact_email', 'contact_phone', 'categories', 'collections'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
