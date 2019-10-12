@@ -176,12 +176,17 @@ class CatalogSerializer(serializers.ModelSerializer):
 		required=False,
 		sizes='bg_image'
 	)
+	logo_image = VersatileImageFieldSerializer(
+		required=False,
+		sizes='logo_image'
+	)
 	lookup_field = 'slug'
 
 	class Meta:
 		model = Catalog
 		fields = (
 			'id', 'owner', 'url', 'name', 'slug', 'created_on', 'description', 'contact_address', 
-			'contact_email', 'contact_phone', 'background_image', 'categories', 'collections'
+			'contact_email', 'contact_phone', 'background_image', 'logo_image', 'categories',
+			'collections'
 		)
 		extra_kwargs = {'slug': {'read_only': True}}
