@@ -79,6 +79,12 @@ def catalog_bg_photo_upload_path(instance, filename):
 		filename,
 	)
 
+def catalog_logo_upload_path(instance, filename):
+	return '{0}/logo-images/catalog/{1}'.format(
+		instance.slug,
+		filename,
+	)
+
 
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -91,6 +97,10 @@ class Catalog(models.Model):
 	contact_phone = models.CharField(max_length=50)
 	background_image = VersatileImageField(
 		upload_to=catalog_bg_photo_upload_path,
+		blank=True
+	)
+	logo_image = VersatileImageField(
+		upload_to=catalog_logo_upload_path,
 		blank=True
 	)
 
