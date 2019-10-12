@@ -39,6 +39,17 @@ def warm_product_images(sender, instance, ** kwargs):
 
 
 @receiver(models.signals.post_save, sender='catalogs.Catalog')
+def warm_logo_images(sender, instance, ** kwargs):
+	"""Ensures different background image sizes are created post-save"""
+	bg_img_warmer = VersatileImageFieldWarmer(
+	instance_or_queryset=instance,
+	rendition_key_set='logo_image',
+	image_attr='logo_image'
+	)
+	num_created, failed_to_create = bg_img_warmer.warm()
+
+
+@receiver(models.signals.post_save, sender='catalogs.Catalog')
 @receiver(models.signals.post_save, sender='catalogs.Category')
 @receiver(models.signals.post_save, sender='catalogs.Collection')
 def warm_bg_images(sender, instance, ** kwargs):
@@ -79,6 +90,12 @@ def catalog_bg_photo_upload_path(instance, filename):
 		filename,
 	)
 
+def catalog_logo_upload_path(instance, filename):
+	return '{0}/logo-images/catalog/{1}'.format(
+		instance.slug,
+		filename,
+	)
+
 
 class Catalog(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -91,6 +108,10 @@ class Catalog(models.Model):
 	contact_phone = models.CharField(max_length=50)
 	background_image = VersatileImageField(
 		upload_to=catalog_bg_photo_upload_path,
+		blank=True
+	)
+	logo_image = VersatileImageField(
+		upload_to=catalog_logo_upload_path,
 		blank=True
 	)
 
