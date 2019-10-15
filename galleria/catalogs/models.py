@@ -31,9 +31,9 @@ subscription_plan = models.CharField(
 def warm_product_images(sender, instance, ** kwargs):
 	"""Ensures different Product image sizes are created post-save"""
 	product_img_warmer = VersatileImageFieldWarmer(
-	instance_or_queryset=instance,
-	rendition_key_set='product_image',
-	image_attr='photo'
+		instance_or_queryset=instance,
+		rendition_key_set='product_image',
+		image_attr='photo'
 	)
 	num_created, failed_to_create = product_img_warmer.warm()
 
@@ -41,12 +41,12 @@ def warm_product_images(sender, instance, ** kwargs):
 @receiver(models.signals.post_save, sender='catalogs.Catalog')
 def warm_logo_images(sender, instance, ** kwargs):
 	"""Ensures different background image sizes are created post-save"""
-	bg_img_warmer = VersatileImageFieldWarmer(
-	instance_or_queryset=instance,
-	rendition_key_set='logo_image',
-	image_attr='logo_image'
+	logo_img_warmer = VersatileImageFieldWarmer(
+		instance_or_queryset=instance,
+		rendition_key_set='logo_image',
+		image_attr='logo_image'
 	)
-	num_created, failed_to_create = bg_img_warmer.warm()
+	num_created, failed_to_create = logo_img_warmer.warm()
 
 
 @receiver(models.signals.post_save, sender='catalogs.Catalog')
@@ -55,9 +55,9 @@ def warm_logo_images(sender, instance, ** kwargs):
 def warm_bg_images(sender, instance, ** kwargs):
 	"""Ensures different background image sizes are created post-save"""
 	bg_img_warmer = VersatileImageFieldWarmer(
-	instance_or_queryset=instance,
-	rendition_key_set='bg_image',
-	image_attr='background_image'
+		instance_or_queryset=instance,
+		rendition_key_set='bg_image',
+		image_attr='background_image'
 	)
 	num_created, failed_to_create = bg_img_warmer.warm()
 
