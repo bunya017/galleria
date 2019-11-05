@@ -1,6 +1,7 @@
 from django.db.utils import IntegrityError
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import NotAuthenticated
+from url_filter.integrations.drf import DjangoFilterBackend
 from .mixins import MultipleFieldLookupMixin
 from .models import (
 	Catalog, Category, ProductEntry, ProductImage,
@@ -86,6 +87,8 @@ class ProductEntryList(generics.ListCreateAPIView):
 		my_permissions.IsProductEntryOwnerOrReadOnly,
 		permissions.IsAuthenticatedOrReadOnly,
 	)
+	filter_backends = [DjangoFilterBackend]
+	filter_fields = ['name', 'price', 'category']
 
 	def get_queryset(self):
 		slug = self.kwargs['category__catalog__slug']
