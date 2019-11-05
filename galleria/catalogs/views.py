@@ -88,6 +88,7 @@ class ProductEntryList(generics.ListCreateAPIView):
 		permissions.IsAuthenticatedOrReadOnly,
 	)
 	filter_backends = [DjangoFilterBackend]
+	filter_fields = ['name', 'price', 'category']
 
 	def get_queryset(self):
 		slug = self.kwargs['category__catalog__slug']
