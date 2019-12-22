@@ -15,4 +15,5 @@ RUN pip install --upgrade pip
 RUN pip install gunicorn
 RUN pip install -r galleria/requirements.txt
 
+EXPOSE 80
 CMD sh run.sh
