@@ -1,4 +1,4 @@
-FROM tiangolo/meinheld-gunicorn:python3.7-alpine3.8
+FROM library/python:3.7-alpine
 
 RUN mkdir -p /app
 RUN mkdir -p /usr/src/static
