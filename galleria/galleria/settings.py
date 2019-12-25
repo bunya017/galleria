@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'catalogs.apps.CatalogsConfig',
     'rest_framework.authtoken',
     'versatileimagefield',
+    'admin_honeypot',
 ]
 
 MIDDLEWARE = [
