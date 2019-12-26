@@ -185,10 +185,3 @@ VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
         ('thumbnail', 'thumbnail__200x200')
     ],
 }
-
-
-# Enforce https redirect on production
-# https://docs.djangoproject.com/en/2.2/ref/settings/#secure-ssl-redirect
-
-if DEBUG != True:
-    SECURE_SSL_REDIRECT = True
