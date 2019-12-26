@@ -1,5 +1,6 @@
 cached-property==1.5.1
 Django==2.2.9
+django-admin-honeypot==1.1.0
 django-cors-headers==2.4.0
 django-url-filter==0.3.14
 django-versatileimagefield==1.10
@@ -7,6 +8,7 @@ djangorestframework==3.11.0
 enum-compat==0.0.3
 hashids==1.2.0
 Pillow==5.4.1
+psycopg2==2.8.4
 python-decouple==3.1
 pytz==2018.9
 six==1.13.0

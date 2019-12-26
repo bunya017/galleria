@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'catalogs.apps.CatalogsConfig',
     'rest_framework.authtoken',
     'versatileimagefield',
+    'admin_honeypot',
 ]
 
 MIDDLEWARE = [
@@ -84,8 +85,12 @@ WSGI_APPLICATION = 'galleria.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT')
     }
 }
 
@@ -180,3 +185,10 @@ VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
         ('thumbnail', 'thumbnail__200x200')
     ],
 }
+
+
+# Enforce https redirect on production
+# https://docs.djangoproject.com/en/2.2/ref/settings/#secure-ssl-redirect
+
+if DEBUG != True:
+    SECURE_SSL_REDIRECT = True
