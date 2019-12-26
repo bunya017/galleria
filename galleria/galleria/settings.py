@@ -158,9 +158,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # django cors
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:8080',
-)
+CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST').split(',')
 
 
 # Django-VesatileImageField conf
