@@ -125,8 +125,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DATETIME_FORMAT': '%a, %d %b %Y %H:%M',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.BrowsableAPIRenderer' if DEBUG is True else 'rest_framework.renderers.JSONRenderer'
+    ]
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
