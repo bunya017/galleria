@@ -55,6 +55,10 @@ class CategoryList(generics.ListCreateAPIView):
 
 	def get_queryset(self):
 		slug = self.kwargs['catalog__slug']
+		try:
+			catalog = Catalog.objects.get(slug=slug)
+		except ObjectDoesNotExist:
+			raise NotFound
 		queryset = Category.objects.filter(catalog__slug=slug)
 		return queryset
 
