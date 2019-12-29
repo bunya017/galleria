@@ -1,6 +1,7 @@
 from django.db.utils import IntegrityError
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, permissions, serializers
-from rest_framework.exceptions import NotAuthenticated
+from rest_framework.exceptions import NotAuthenticated, NotFound
 from url_filter.integrations.drf import DjangoFilterBackend
 from .mixins import MultipleFieldLookupMixin
 from .models import (
@@ -138,6 +139,10 @@ class CollectionList(generics.ListCreateAPIView):
 
 	def get_queryset(self):
 		slug = self.kwargs['catalog__slug']
+		try:
+			catalog = Catalog.objects.get(slug=slug)
+		except ObjectDoesNotExist:
+			raise NotFound
 		queryset = Collection.objects.filter(catalog__slug=slug)
 		return queryset
 
