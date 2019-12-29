@@ -127,9 +127,11 @@ REST_FRAMEWORK = {
     ),
     'DATETIME_FORMAT': '%a, %d %b %Y %H:%M',
     'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.BrowsableAPIRenderer' if DEBUG is True else 'rest_framework.renderers.JSONRenderer'
+        'rest_framework.renderers.JSONRenderer',
     ]
 }
+if DEBUG:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append('rest_framework.renderers.BrowsableAPIRenderer')
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -154,7 +156,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Media files
-USE_S3 = config('USE_S3')
+USE_S3 = config('USE_S3', cast=bool)
 if USE_S3 is True:
     AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
     AWS_S3_ENDPOINT_URL = 'https://s3.%s.scw.cloud' % AWS_S3_REGION_NAME
