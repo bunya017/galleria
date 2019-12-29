@@ -27,5 +27,5 @@ urlpatterns = [
     path('api/api-auth/', include('rest_framework.urls')),
 ]
 
-if settings.DEBUG:
+if settings.USE_S3 is False:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
