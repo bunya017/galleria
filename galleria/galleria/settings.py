@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'versatileimagefield',
     'admin_honeypot',
+    'storages',
 ]
 
 MIDDLEWARE = [
