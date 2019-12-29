@@ -93,6 +93,10 @@ class ProductEntryList(generics.ListCreateAPIView):
 
 	def get_queryset(self):
 		slug = self.kwargs['category__catalog__slug']
+		try:
+			catalog = Catalog.objects.get(slug=slug)
+		except ObjectDoesNotExist:
+			raise NotFound
 		queryset = ProductEntry.objects.filter(category__catalog__slug=slug)
 		return queryset
 
