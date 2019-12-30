@@ -116,7 +116,7 @@ class ProductEntryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestro
 		permissions.IsAuthenticatedOrReadOnly,
 	)
 	queryset = ProductEntry.objects.all()
-	lookup_fields = ('category__catalog__slug', 'slug')
+	lookup_fields = ('category__catalog__slug', 'slug', 'reference_id')
 
 	def get_serializer_class(self):
 		if self.request.method == 'GET':
