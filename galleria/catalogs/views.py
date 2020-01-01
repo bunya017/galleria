@@ -192,6 +192,15 @@ class CollectionDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyA
 	queryset = Collection.objects.all()
 	lookup_fields = ('catalog__slug', 'slug')
 
+	def perform_update(self, serializer):
+		validated_data = serializer.validated_data
+		catalog_slug = self.kwargs['catalog__slug']
+		slug = self.kwargs['slug']
+		instance = Collection.objects.get(catalog__slug=catalog_slug, slug=slug)
+		if validated_data['background_image']:
+			instance.background_image.delete_all_created_images()
+			instance.background_image.delete(save=False)
+		serializer.save(owner=self.request.user)
 
 
 class CollectionProductList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
