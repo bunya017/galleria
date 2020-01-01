@@ -174,6 +174,21 @@ class ProductImageDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestro
 		'id'
 	)
 
+	def perform_update(self, serializer):
+		validated_data = serializer.validated_data
+		catalog_slug = self.kwargs['product__category__catalog__slug']
+		product_slug = self.kwargs['product__slug']
+		product_reference_id = self.kwargs['product__reference_id']
+		image_id = self.kwargs['id']
+		instance = ProductImage.objects.get(
+			product__category__catalog__slug=catalog_slug, product__slug=product_slug,
+			product__reference_id=product_reference_id, id=image_id
+		)
+		if validated_data['photo']:
+			instance.photo.delete_all_created_images()
+			instance.photo.delete(save=False)
+		serializer.save()
+
 
 class CollectionList(generics.ListCreateAPIView):
 	
