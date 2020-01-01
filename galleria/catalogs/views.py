@@ -189,6 +189,11 @@ class ProductImageDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestro
 			instance.photo.delete(save=False)
 		serializer.save()
 
+	def perform_destroy(self, instance):
+		instance.photo.delete_all_created_images()
+		instance.photo.delete(save=False)
+		instance.delete()
+
 
 class CollectionList(generics.ListCreateAPIView):
 	
