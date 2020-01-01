@@ -13,10 +13,19 @@ class ProductImageSerializer(serializers.ModelSerializer):
 	photo = VersatileImageFieldSerializer(
 		sizes='product_image'
 	)
+	url = relations.ParameterisedHyperlinkedIdentityField(
+		view_name='productimage-detail',
+		lookup_fields=(
+			('product.category.catalog.slug', 'product__category__catalog__slug'),
+			('product.reference_id', 'product__reference_id'),
+			('product.slug', 'product__slug'),
+			('id', 'id'),
+		)
+	)
 
 	class Meta:
 		model = ProductImage
-		fields = ('id', 'product', 'photo')
+		fields = ('id', 'url', 'product', 'photo')
 
 
 class ProductEntrySerializer(serializers.ModelSerializer):
