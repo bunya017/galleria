@@ -160,6 +160,21 @@ class ProductImageList(MultipleFieldLookupMixin, generics.ListCreateAPIView):
 	)
 
 
+class ProductImageDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = ProductImageSerializer
+	permission_classes = (
+		my_permissions.IsProductImageOwnerOrReadOnly,
+		permissions.IsAuthenticatedOrReadOnly,
+	)
+	queryset = ProductImage.objects.all()
+	lookup_fields = (
+		'product__category__catalog__slug',
+		'product__slug',
+		'product__reference_id',
+		'id'
+	)
+
+
 class CollectionList(generics.ListCreateAPIView):
 	
 	def get_serializer_class(self):
