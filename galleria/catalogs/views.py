@@ -45,6 +45,18 @@ class CatalogDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Catalog.objects.all()
 	lookup_field = 'slug'
 
+	def perform_update(self, serializer):
+		validated_data = serializer.validated_data
+		slug = self.kwargs['slug']
+		instance = Catalog.objects.get(slug=slug)
+		if validated_data['background_image']:
+			instance.background_image.delete_all_created_images()
+			instance.background_image.delete(save=False)
+		if validated_data['logo_image']:
+			instance.logo_image.delete_all_created_images()
+			instance.logo_image.delete(save=False)
+		serializer.save(owner=self.request.user)
+
 
 class CategoryList(generics.ListCreateAPIView):
 	serializer_class = CategorySerializer
