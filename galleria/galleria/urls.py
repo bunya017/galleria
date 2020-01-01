@@ -17,13 +17,15 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from decouple import config
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path(str(config('ADMIN_SITE')) + '/', admin.site.urls),
     path('api/', include('catalogs.urls')),
     path('api/users/', include('users.urls')),
     path('api/api-auth/', include('rest_framework.urls')),
 ]
 
-if settings.DEBUG:
+if settings.USE_S3 is False:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

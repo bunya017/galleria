@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['bunya017.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -43,11 +43,15 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'catalogs.apps.CatalogsConfig',
     'rest_framework.authtoken',
+    'versatileimagefield',
+    'admin_honeypot',
+    'storages',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -82,8 +86,12 @@ WSGI_APPLICATION = 'galleria.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT')
     }
 }
 
@@ -118,8 +126,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DATETIME_FORMAT': '%a, %d %b %Y %H:%M',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
 }
-
+if DEBUG:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append('rest_framework.renderers.BrowsableAPIRenderer')
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -140,16 +152,51 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Media files
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+USE_S3 = config('USE_S3', cast=bool)
+if USE_S3 is True:
+    AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
+    AWS_S3_ENDPOINT_URL = 'https://s3.%s.scw.cloud' % AWS_S3_REGION_NAME
+    AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    DEFAULT_FILE_STORAGE = 'galleria.storage_backends.MediaStorage'
+    AWS_DEFAULT_ACL = config('AWS_DEFAULT_ACL')
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # django cors
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:8080',
-)
+CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST').split(',')
+
+
+# Django-VesatileImageField conf
+
+VERSATILEIMAGEFIELD_SETTINGS = {
+    'progressive_jpeg': True
+}
+
+VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
+    'product_image': [
+        ('full_size', 'url'),
+        ('thumbnail', 'thumbnail__100x100'),
+        ('small', 'thumbnail__480x480')
+    ],
+    'bg_image': [
+        ('full_size', 'url'),
+        ('thumbnail', 'thumbnail__100x100'),
+        ('small', 'thumbnail__400x400')
+    ],
+    'logo_image': [
+        ('full_size', 'url'),
+        ('thumbnail', 'thumbnail__200x200')
+    ],
+}
