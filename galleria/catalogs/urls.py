@@ -23,6 +23,10 @@ urlpatterns = [
 	path('catalogs/<str:product__category__catalog__slug>/products/<str:product__slug>/<str:product__reference_id>/photos/',
 		views.ProductImageList.as_view(), name='productimage-list',
 	),
+	path(
+		'catalogs/<str:product__category__catalog__slug>/products/<str:product__slug>/<str:product__reference_id>/photos/<int:id>/',
+		views.ProductImageDetail.as_view(), name='productimage-detail',
+	),
 	path('catalogs/<str:catalog__slug>/collections/', 
 		views.CollectionList.as_view(), name='collection-list',
 	),
