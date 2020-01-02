@@ -103,7 +103,7 @@ class CategoryDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyAPI
 		catalog_slug = self.kwargs['catalog__slug']
 		slug = self.kwargs['slug']
 		instance = Category.objects.get(catalog__slug=catalog_slug, slug=slug)
-		if validated_data['background_image']:
+		if 'background_image' in validated_data:
 			instance.background_image.delete_all_created_images()
 			instance.background_image.delete(save=False)
 		serializer.save(owner=self.request.user)
@@ -232,7 +232,7 @@ class CollectionDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestroyA
 		catalog_slug = self.kwargs['catalog__slug']
 		slug = self.kwargs['slug']
 		instance = Collection.objects.get(catalog__slug=catalog_slug, slug=slug)
-		if validated_data['background_image']:
+		if 'background_image' in validated_data:
 			instance.background_image.delete_all_created_images()
 			instance.background_image.delete(save=False)
 		serializer.save(owner=self.request.user)
