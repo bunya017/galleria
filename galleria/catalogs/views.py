@@ -49,10 +49,10 @@ class CatalogDetail(generics.RetrieveUpdateDestroyAPIView):
 		validated_data = serializer.validated_data
 		slug = self.kwargs['slug']
 		instance = Catalog.objects.get(slug=slug)
-		if validated_data['background_image']:
+		if 'background_image' in validated_data:
 			instance.background_image.delete_all_created_images()
 			instance.background_image.delete(save=False)
-		if validated_data['logo_image']:
+		if 'logo_image' in validated_data:
 			instance.logo_image.delete_all_created_images()
 			instance.logo_image.delete(save=False)
 		serializer.save(owner=self.request.user)
