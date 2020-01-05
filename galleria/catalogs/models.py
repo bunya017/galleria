@@ -205,6 +205,7 @@ class Collection(models.Model):
 	)
 	slug = models.SlugField(max_length=120)
 	description = models.TextField(blank=True)
+	is_featured = models.BooleanField(default=False)
 	products = models.ManyToManyField(
 		ProductEntry, blank=True, related_name='collection_products',
 		through='CollectionProduct'
@@ -235,7 +236,26 @@ class CollectionProduct(models.Model):
 	class Meta:
 		unique_together = ('product', 'collection')
 		verbose_name = 'Collction Product'
-		verbose_name_plural = 'collection Products'
+		verbose_name_plural = 'Collection Products'
 
 	def __str__(self):
 		return self.product.name + ' - ' + self.collection.name
+
+
+class FeaturedProductsManager(models.Manager):
+
+	def get_queryset(self):
+		return super(FeaturedProductsManager, self).get_queryset().filter(is_featured=True)
+
+	def create(self, **kwargs):
+		kwargs.update({'is_featured': True})
+		return super(FeaturedProductsManager, self).create(**kwargs)
+
+
+class FeaturedProducts(Collection):
+	objects = FeaturedProductsManager()
+
+	class Meta:
+		verbose_name = 'Featured Products'
+		verbose_name_plural = 'Featured Products'
+		proxy = True
