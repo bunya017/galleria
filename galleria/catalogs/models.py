@@ -122,7 +122,16 @@ class Catalog(models.Model):
 	def save(self, *args, **kwargs):
 		self.name = self.name.title()
 		self.slug = slugify(self.name)
+		is_new = not self.pk
 		super(Catalog, self).save(*args, **kwargs)
+		if is_new:
+			FeaturedProducts.objects.create(
+				name='Featured Products',
+				catalog=self,
+				description='Featured products.',
+				is_featured=True
+			)
+
 
 	def __str__(self):
 		return self.name
