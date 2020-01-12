@@ -196,6 +196,8 @@ class ProductImageDetail(MultipleFieldLookupMixin, generics.RetrieveUpdateDestro
 
 
 class CollectionList(generics.ListCreateAPIView):
+	filter_backends = [DjangoFilterBackend]
+	filter_fields = ['is_featured']
 	
 	def get_serializer_class(self):
 		if self.request.method == 'GET':
