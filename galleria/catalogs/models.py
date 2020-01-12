@@ -5,6 +5,7 @@ from django.utils.text import slugify
 
 from versatileimagefield.fields import VersatileImageField
 from versatileimagefield.image_warmer import VersatileImageFieldWarmer
+from versatileimagefield.placeholder import OnStoragePlaceholderImage
 
 from .utils import generate_hash_id
 
@@ -147,7 +148,10 @@ class Category(models.Model):
 	description = models.CharField(max_length=255, blank=True)
 	background_image = VersatileImageField(
 		upload_to=category_bg_photo_upload_path,
-		blank=True
+		blank=True,
+		placeholder_image=OnStoragePlaceholderImage(
+			path='placeholder/placeholder.png'
+		)
 	)
 
 	class Meta:
@@ -244,7 +248,7 @@ class CollectionProduct(models.Model):
 
 	class Meta:
 		unique_together = ('product', 'collection')
-		verbose_name = 'Collction Product'
+		verbose_name = 'Collection Product'
 		verbose_name_plural = 'Collection Products'
 
 	def __str__(self):
