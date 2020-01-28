@@ -109,7 +109,10 @@ class Catalog(models.Model):
 	contact_phone = models.CharField(max_length=50)
 	background_image = VersatileImageField(
 		upload_to=catalog_bg_photo_upload_path,
-		blank=True
+		blank=True,
+		placeholder_image=OnStoragePlaceholderImage(
+			path='placeholder/catalog_placeholder.png'
+		)
 	)
 	logo_image = VersatileImageField(
 		upload_to=catalog_logo_upload_path,
