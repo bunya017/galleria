@@ -164,7 +164,7 @@ if USE_S3 is True:
     AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
     AWS_S3_OBJECT_PARAMETERS = {
-        'CacheControl': 'max-age=86400',
+        'CacheControl': 'max-age=‭316224000‬',
     }
     DEFAULT_FILE_STORAGE = 'galleria.storage_backends.MediaStorage'
     AWS_DEFAULT_ACL = config('AWS_DEFAULT_ACL')
