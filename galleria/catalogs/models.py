@@ -225,7 +225,10 @@ class Collection(models.Model):
 	)
 	background_image = VersatileImageField(
 		upload_to=collection_bg_photo_upload_path,
-		blank=True
+		blank=True,
+		placeholder_image=OnStoragePlaceholderImage(
+			path='placeholder/placeholder.png'
+		)
 	)
 
 	class Meta:
