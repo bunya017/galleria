@@ -130,7 +130,10 @@ class CollectionSerializer(serializers.ModelSerializer):
 			'id', 'url', 'is_featured', 'name', 'slug', 'description',
 			'catalog', 'background_image', 'collection_products'
 		)
-		extra_kwargs = {'slug': {'read_only': True}}
+		extra_kwargs = {
+			'slug': {'read_only': True},
+			'is_featured': {'read_only': True}
+		}
 
 
 class GetCollectionSerializer(CollectionSerializer):
