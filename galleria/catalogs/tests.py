@@ -430,7 +430,7 @@ class ProductImageListTest(APITestCase):
 			kwargs={
 				'product__category__catalog__slug': self.product.category.catalog.slug,
 				'product__slug': self.product.slug,
-				'reference_id': self.product.reference_id,
+				'product__reference_id': self.product.reference_id,
 			}
 		)
 
