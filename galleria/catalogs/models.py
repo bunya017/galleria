@@ -116,7 +116,10 @@ class Catalog(models.Model):
 	)
 	logo_image = VersatileImageField(
 		upload_to=catalog_logo_upload_path,
-		blank=True
+		blank=True,
+		placeholder_image=OnStoragePlaceholderImage(
+			path='placeholder/logo_placeholder.png'
+		)
 	)
 
 	class Meta:
