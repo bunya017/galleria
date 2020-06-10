@@ -434,12 +434,17 @@ class ProductImageListTest(APITestCase):
 			}
 		)
 
-	def _cleanup(self, path):
-		if os.path.isdir(path):
-			shutil.rmtree(path)
+	def _cleanup(self, paths):
+		for path in paths:
+			if os.path.isdir(path):
+				shutil.rmtree(path)
 
 	def tearDown(self):
-		self._cleanup(os.path.join(settings.MEDIA_ROOT, self.catalog.slug))
+		self._cleanup([
+			os.path.join(settings.MEDIA_ROOT, self.catalog.slug),
+			# Sized images by versatileimagefield
+			os.path.join(settings.MEDIA_ROOT, '__sized__', self.catalog.slug),
+		])
 
 	def test_add_product_image(self):
 		self.client.login(username='testUser', password='testPassword')
