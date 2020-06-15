@@ -206,3 +206,12 @@ VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
         ('thumbnail', 'thumbnail__200x200')
     ],
 }
+
+
+# Silence CacheKeyWarning
+# https://docs.djangoproject.com/en/3.0/topics/cache
+
+import warnings
+from django.core.cache import CacheKeyWarning
+
+warnings.simplefilter("ignore", CacheKeyWarning)
